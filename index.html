@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0d11">
+<link rel="manifest" href="/manifest.json">
+<title>My Command Center</title>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#0b0d11;font-family:'Segoe UI',Arial,sans-serif;color:#cdd3df;}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 70px;}
+h1{color:#fff;font-size:30px;margin:0 0 12px;}
+.sub{color:#7b8190;font-size:14px;margin:0 0 18px;}
+.toggle{display:inline-flex;background:#11141a;border:1px solid #2a2e38;border-radius:999px;padding:5px;gap:4px;margin-bottom:14px;}
+.modebtn{padding:9px 22px;border-radius:999px;border:none;background:transparent;color:#aeb4c0;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;}
+.modebtn:hover{color:#fff;}
+.modebtn.active{background:#4c7dff;color:#fff;box-shadow:0 2px 10px rgba(76,125,255,.4);}
+.bar{position:sticky;top:0;z-index:30;background:rgba(11,13,17,.94);backdrop-filter:blur(8px);padding:14px 0 12px;margin-bottom:6px;border-bottom:1px solid #1b1f27;}
+#search{width:100%;padding:13px 16px;border-radius:12px;border:1px solid #2a2e38;background:#11141a;color:#fff;font-size:15px;outline:none;}
+#search::placeholder{color:#6b7180;}
+#search:focus{border-color:#4c7dff;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.chip{padding:7px 13px;border-radius:999px;border:1px solid #2a2e38;background:#11141a;color:#aeb4c0;font-size:13px;font-weight:600;cursor:pointer;transition:.12s;}
+.chip:hover{border-color:#3a4150;color:#fff;}
+.chip.active{background:#4c7dff;border-color:#4c7dff;color:#fff;}
+.superhead{color:#fff;font-size:26px;font-weight:900;letter-spacing:.3px;margin:40px 0 10px;padding:18px 24px;border-radius:14px;
+  background:linear-gradient(100deg,#1b2a5e 0%,#162043 55%,#11141a 100%);border:1px solid #2c3a6e;border-left:6px solid #4c7dff;
+  box-shadow:0 6px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);}
+.super:first-of-type .superhead{margin-top:14px;}
+.cathead{background:#11141a;border-left:4px solid #4c7dff;border-radius:8px;padding:10px 15px;margin:18px 0 13px;font-weight:700;font-size:16px;color:#fff;}
+.grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
+.tool{position:relative;display:flex;flex-direction:column;align-items:center;width:98px;text-decoration:none;}
+.logo{width:78px;height:78px;border-radius:18px;background:#1c1f26;border:1px solid #2a2e38;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 3px 8px rgba(0,0,0,.35);transition:.15s;}
+.logo img{width:56px;height:56px;object-fit:contain;}
+.logo.mono{font-weight:800;font-size:25px;color:#fff;letter-spacing:.5px;}
+.tname{margin-top:9px;font-size:13px;font-weight:600;color:#cdd3df;text-align:center;line-height:1.25;}
+.tool:hover .logo{transform:translateY(-2px);border-color:#4c7dff;}
+.tool:hover .tname{color:#fff;}
+.cat.hide,.super.hide,.tool.hide{display:none;}
+.empty{color:#6b7180;font-size:15px;padding:40px 0;text-align:center;display:none;}
+.loading{color:#7b8190;padding:60px 0;text-align:center;font-size:16px;}
+</style></head>
+<body><div class="wrap">
+  <h1>🚀 My Command Center</h1>
+  <div class="toggle">
+    <button class="modebtn active" data-mode="Tools">🧰 Tools</button>
+    <button class="modebtn" data-mode="Sources">📰 Sources</button>
+  </div>
+  <p class="sub" id="count"></p>
+  <div class="bar">
+    <input id="search" type="text" placeholder="🔍  Search…" autocomplete="off">
+    <div class="chips" id="chips"></div>
+  </div>
+  <div id="root"><div class="loading">Loading your stack…</div></div>
+  <div class="empty" id="empty">No matches.</div>
+</div>
+<script>
+const palette=["#10a37f","#d97757","#4285f4","#20808d","#7e57c2","#ef5350","#26a69a","#ec407a","#5c6bc0","#ffa726","#66bb6a","#42a5f5","#ab47bc","#ff7043","#29b6f6","#9ccc65"];
+function mono(n){const p=n.replace(/[.\/]/g,' ').split(' ').filter(Boolean);
+  if(!p.length)return n.slice(0,2).toUpperCase();
+  if(p.length>=2)return (p[0][0]+p[1][0]).toUpperCase(); return p[0].slice(0,2).toUpperCase();}
+function colorFor(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))>>>0;return palette[h%palette.length];}
+function srcsFor(domain,override){const d=(domain||'').split('/')[0];const a=[];
+  if(override)a.push(override);
+  a.push("https://logo.clearbit.com/"+d,"https://www.google.com/s2/favicons?domain="+d+"&sz=128","https://icons.duckduckgo.com/ip3/"+d+".ico");
+  return a;}
+function initLogo(img,srcs){let i=0;img.onerror=()=>{i++;if(i<srcs.length){img.src=srcs[i];}
+  else{const s=img.parentElement;s.classList.add('mono');s.textContent=img.dataset.mono;s.style.background=img.dataset.color;}};
+  img.src=srcs[0];}
+
+let DATA={Tools:[],Sources:[]};
+let activeMode='Tools',activeSec='all';
+const root=document.getElementById('root'),chipsEl=document.getElementById('chips'),
+      search=document.getElementById('search'),empty=document.getElementById('empty'),countEl=document.getElementById('count');
+
+function groupMode(items){
+  // order sections + categories by their minimum sort value
+  const secMin={},catMin={};
+  items.forEach(it=>{
+    secMin[it.section]=Math.min(secMin[it.section]??1e9,it.sort);
+    const k=it.section+'|||'+it.category;
+    catMin[k]=Math.min(catMin[k]??1e9,it.sort);
+  });
+  const sections=[...new Set(items.map(i=>i.section))].sort((a,b)=>secMin[a]-secMin[b]);
+  return sections.map(sec=>{
+    const its=items.filter(i=>i.section===sec);
+    const cats=[...new Set(its.map(i=>i.category))].sort((a,b)=>catMin[sec+'|||'+a]-catMin[sec+'|||'+b]);
+    return {sec,cats:cats.map(cat=>({cat,items:its.filter(i=>i.category===cat).sort((a,b)=>a.sort-b.sort)}))};
+  });
+}
+function tileEl(it){
+  const a=document.createElement('a');a.className='tool';a.href=it.url;a.target='_blank';a.rel='noopener';a.dataset.name=(it.name||'').toLowerCase();
+  const logo=document.createElement('span');logo.className='logo';
+  const img=document.createElement('img');img.alt=it.name;img.loading='lazy';
+  img.dataset.mono=mono(it.name);img.dataset.color=colorFor(it.name);
+  logo.appendChild(img);
+  const nm=document.createElement('span');nm.className='tname';nm.textContent=it.name;
+  a.appendChild(logo);a.appendChild(nm);
+  initLogo(img,srcsFor(it.domain,it.logo));
+  return a;
+}
+function renderMode(){
+  const groups=groupMode(DATA[activeMode]||[]);
+  root.innerHTML='';
+  groups.forEach((g,gi)=>{
+    const sec=document.createElement('section');sec.className='super';sec.dataset.sec='s'+gi;
+    const h=document.createElement('h2');h.className='superhead';h.textContent=g.sec;sec.appendChild(h);
+    g.cats.forEach(c=>{
+      const cat=document.createElement('div');cat.className='cat';
+      const ch=document.createElement('div');ch.className='cathead';ch.textContent=c.cat;cat.appendChild(ch);
+      const grid=document.createElement('div');grid.className='grid';
+      c.items.forEach(it=>grid.appendChild(tileEl(it)));
+      cat.appendChild(grid);sec.appendChild(cat);
+    });
+    root.appendChild(sec);
+  });
+  // chips
+  chipsEl.innerHTML='';
+  const all=document.createElement('button');all.className='chip active';all.dataset.sec='all';all.textContent='All';chipsEl.appendChild(all);
+  groups.forEach((g,gi)=>{const b=document.createElement('button');b.className='chip';b.dataset.sec='s'+gi;b.textContent=g.sec;chipsEl.appendChild(b);});
+  chipsEl.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');activeSec=c.dataset.sec;apply();});
+  const tot=(DATA[activeMode]||[]).length;
+  countEl.textContent=`${tot} ${activeMode==='Tools'?'tools':'sources'} · ${groups.length} sections`;
+  apply();
+}
+function apply(){
+  const q=search.value.trim().toLowerCase();let any=false;
+  root.querySelectorAll('.super').forEach(sec=>{
+    const secMatch=(activeSec==='all'||sec.dataset.sec===activeSec);let secHas=false;
+    sec.querySelectorAll('.cat').forEach(cat=>{let catHas=false;
+      cat.querySelectorAll('.tool').forEach(t=>{const m=secMatch&&(!q||t.dataset.name.includes(q));t.classList.toggle('hide',!m);if(m)catHas=true;});
+      cat.classList.toggle('hide',!catHas);if(catHas)secHas=true;});
+    sec.classList.toggle('hide',!secHas);if(secHas)any=true;});
+  empty.style.display=any?'none':'block';
+}
+search.addEventListener('input',apply);
+document.querySelectorAll('.modebtn').forEach(b=>b.onclick=()=>{
+  activeMode=b.dataset.mode;activeSec='all';search.value='';
+  document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x===b));
+  renderMode();
+});
+
+fetch('/api/data').then(r=>r.json()).then(d=>{
+  (d.items||[]).forEach(it=>{(DATA[it.mode]||DATA.Tools).push(it);});
+  renderMode();
+}).catch(e=>{root.innerHTML='<div class="loading">Could not load data. Check the AIRTABLE_TOKEN setting in Vercel.<br><small>'+e+'</small></div>';});
+</script>
+</body></html>
