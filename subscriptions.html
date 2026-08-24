@@ -102,7 +102,13 @@
       gap: 4px;
       margin-top: 22px;
       overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
       border-bottom: 1px solid var(--border);
+    }
+
+    .site-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .site-tab {
@@ -679,8 +685,8 @@
         <button class="logout-button" id="logoutButton" type="button" hidden>Sign out</button>
       </div>
       <nav class="site-tabs" aria-label="Aurora sections">
-        <a class="site-tab" href="/?mode=Tools">🧰 Tools</a>
-        <a class="site-tab" href="/?mode=Sources">📰 Sources</a>
+        <a class="site-tab" href="/tools.html?mode=Tools">🧰 Tools</a>
+        <a class="site-tab" href="/tools.html?mode=Sources">📰 Sources</a>
         <a class="site-tab active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
       </nav>
     </header>
@@ -1144,3 +1150,4 @@
   </script>
 </body>
 </html>
+

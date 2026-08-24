@@ -1,171 +1,629 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b0d11">
-<link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
-<link rel="manifest" href="/manifest.json">
-<title>Aurora · Command Center</title>
-<style>
-*{box-sizing:border-box;}
-body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#cdd3df;}
-.wrap{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:22px 0 70px;}
-.site-header{padding-bottom:18px;}
-.site-brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:17px;font-weight:800;}
-.brand-mark{display:grid;width:36px;height:36px;place-items:center;border:1px solid #415189;border-radius:11px;background:linear-gradient(145deg,#5264ff,#725cff);box-shadow:0 8px 20px rgba(80,77,255,.24);}
-.site-tabs{display:flex;align-items:flex-end;gap:4px;margin-top:22px;border-bottom:1px solid #21314e;overflow-x:auto;}
-.site-tab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 19px;border:0;border-radius:11px 11px 0 0;background:transparent;color:#8997af;font-family:inherit;font-size:14px;font-weight:750;cursor:pointer;text-decoration:none;white-space:nowrap;transition:.15s;}
-.site-tab:hover{color:#fff;background:#111c30;}
-.site-tab.active{color:#fff;background:linear-gradient(180deg,rgba(118,98,255,.18),rgba(118,98,255,.05));}
-.site-tab.active::after{position:absolute;right:10px;bottom:-1px;left:10px;height:3px;border-radius:3px 3px 0 0;background:#7662ff;content:"";}
-.sub{color:#7b8190;font-size:14px;margin:0 0 18px;}
-.bar{position:sticky;top:0;z-index:30;background:rgba(11,13,17,.94);backdrop-filter:blur(8px);padding:14px 0 12px;margin-bottom:6px;border-bottom:1px solid #1b1f27;}
-#search{width:100%;padding:13px 16px;border-radius:12px;border:1px solid #2a2e38;background:#11141a;color:#fff;font-size:15px;outline:none;}
-#search::placeholder{color:#6b7180;}
-#search:focus{border-color:#4c7dff;}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.chip{padding:7px 13px;border-radius:999px;border:1px solid #2a2e38;background:#11141a;color:#aeb4c0;font-size:13px;font-weight:600;cursor:pointer;transition:.12s;}
-.chip:hover{border-color:#3a4150;color:#fff;}
-.chip.active{background:#4c7dff;border-color:#4c7dff;color:#fff;}
-.superhead{color:#fff;font-size:26px;font-weight:900;letter-spacing:.3px;margin:40px 0 10px;padding:18px 24px;border-radius:14px;
-  background:linear-gradient(100deg,#1b2a5e 0%,#162043 55%,#11141a 100%);border:1px solid #2c3a6e;border-left:6px solid #4c7dff;
-  box-shadow:0 6px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);}
-.super:first-of-type .superhead{margin-top:14px;}
-.cathead{background:#11141a;border-left:4px solid #4c7dff;border-radius:8px;padding:10px 15px;margin:18px 0 13px;font-weight:700;font-size:16px;color:#fff;}
-.grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
-.tool{position:relative;display:flex;flex-direction:column;align-items:center;width:98px;text-decoration:none;}
-.logo{width:78px;height:78px;border-radius:18px;background:#1c1f26;border:1px solid #2a2e38;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 3px 8px rgba(0,0,0,.35);transition:.15s;}
-.logo img{width:56px;height:56px;object-fit:contain;}
-.logo.mono{font-weight:800;font-size:25px;color:#fff;letter-spacing:.5px;}
-.tname{margin-top:9px;font-size:13px;font-weight:600;color:#cdd3df;text-align:center;line-height:1.25;}
-.tool:hover .logo{transform:translateY(-2px);border-color:#4c7dff;}
-.tool:hover .tname{color:#fff;}
-.cat.hide,.super.hide,.tool.hide{display:none;}
-.empty{color:#6b7180;font-size:15px;padding:40px 0;text-align:center;display:none;}
-.loading{color:#7b8190;padding:60px 0;text-align:center;font-size:16px;}
-@media(max-width:680px){.wrap{width:calc(100% - 24px);padding:14px 0 60px;}.site-tabs{margin-top:16px}.site-tab{flex:1 0 auto;padding:0 14px}.bar{top:0}.superhead{font-size:22px;padding:16px 18px}.grid{gap:15px}.tool{width:90px}}
-</style></head>
-<body><div class="wrap">
-  <header class="site-header">
-    <a class="site-brand" href="/">
-      <span class="brand-mark" aria-hidden="true">A</span>
-      <span>Aurora</span>
-    </a>
-    <nav class="site-tabs" aria-label="Aurora sections">
-      <button class="site-tab active" data-mode="Tools" type="button" aria-pressed="true">🧰 Tools</button>
-      <button class="site-tab" data-mode="Sources" type="button" aria-pressed="false">📰 Sources</button>
-      <a class="site-tab" href="/subscriptions.html">💳 Subscriptions</a>
-    </nav>
-  </header>
-  <p class="sub" id="count"></p>
-  <div class="bar">
-    <input id="search" type="text" placeholder="🔍  Search…" autocomplete="off">
-    <div class="chips" id="chips"></div>
-  </div>
-  <div id="root"><div class="loading">Loading your stack…</div></div>
-  <div class="empty" id="empty">No matches.</div>
-</div>
-<script>
-const palette=["#10a37f","#d97757","#4285f4","#20808d","#7e57c2","#ef5350","#26a69a","#ec407a","#5c6bc0","#ffa726","#66bb6a","#42a5f5","#ab47bc","#ff7043","#29b6f6","#9ccc65"];
-function mono(n){const p=n.replace(/[.\/]/g,' ').split(' ').filter(Boolean);
-  if(!p.length)return n.slice(0,2).toUpperCase();
-  if(p.length>=2)return (p[0][0]+p[1][0]).toUpperCase(); return p[0].slice(0,2).toUpperCase();}
-function colorFor(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))>>>0;return palette[h%palette.length];}
-function srcsFor(domain,override){const d=(domain||'').split('/')[0];const a=[];
-  if(override)a.push(override);
-  a.push("https://logo.clearbit.com/"+d,"https://www.google.com/s2/favicons?domain="+d+"&sz=128","https://icons.duckduckgo.com/ip3/"+d+".ico");
-  return a;}
-function initLogo(img,srcs){let i=0;img.onerror=()=>{i++;if(i<srcs.length){img.src=srcs[i];}
-  else{const s=img.parentElement;s.classList.add('mono');s.textContent=img.dataset.mono;s.style.background=img.dataset.color;}};
-  img.src=srcs[0];}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b101b">
+  <link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
+  <title>Aurora</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f8fc;
+      --muted: rgba(235, 239, 249, .72);
+      --glass: rgba(9, 14, 24, .66);
+      --glass-strong: rgba(8, 12, 21, .82);
+      --line: rgba(255, 255, 255, .17);
+      --violet: #8b78ff;
+      --violet-soft: #b7adff;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .28);
+    }
 
-let DATA={Tools:[],Sources:[]};
-const requestedMode=new URLSearchParams(location.search).get('mode');
-let activeMode=requestedMode==='Sources'?'Sources':'Tools',activeSec='all';
-const root=document.getElementById('root'),chipsEl=document.getElementById('chips'),
-      search=document.getElementById('search'),empty=document.getElementById('empty'),countEl=document.getElementById('count');
+    * { box-sizing: border-box; }
 
-function groupMode(items){
-  // order sections + categories by their minimum sort value
-  const secMin={},catMin={};
-  items.forEach(it=>{
-    secMin[it.section]=Math.min(secMin[it.section]??1e9,it.sort);
-    const k=it.section+'|||'+it.category;
-    catMin[k]=Math.min(catMin[k]??1e9,it.sort);
-  });
-  const sections=[...new Set(items.map(i=>i.section))].sort((a,b)=>secMin[a]-secMin[b]);
-  return sections.map(sec=>{
-    const its=items.filter(i=>i.section===sec);
-    const cats=[...new Set(its.map(i=>i.category))].sort((a,b)=>catMin[sec+'|||'+a]-catMin[sec+'|||'+b]);
-    return {sec,cats:cats.map(cat=>({cat,items:its.filter(i=>i.category===cat).sort((a,b)=>a.sort-b.sort)}))};
-  });
-}
-function tileEl(it){
-  const a=document.createElement('a');a.className='tool';a.href=it.url;a.target='_blank';a.rel='noopener';a.dataset.name=(it.name||'').toLowerCase();
-  const logo=document.createElement('span');logo.className='logo';
-  const img=document.createElement('img');img.alt=it.name;img.loading='lazy';
-  img.dataset.mono=mono(it.name);img.dataset.color=colorFor(it.name);
-  logo.appendChild(img);
-  const nm=document.createElement('span');nm.className='tname';nm.textContent=it.name;
-  a.appendChild(logo);a.appendChild(nm);
-  initLogo(img,srcsFor(it.domain,it.logo));
-  return a;
-}
-function renderMode(){
-  const groups=groupMode(DATA[activeMode]||[]);
-  root.innerHTML='';
-  groups.forEach((g,gi)=>{
-    const sec=document.createElement('section');sec.className='super';sec.dataset.sec='s'+gi;
-    const h=document.createElement('h2');h.className='superhead';h.textContent=g.sec;sec.appendChild(h);
-    g.cats.forEach(c=>{
-      const cat=document.createElement('div');cat.className='cat';
-      const ch=document.createElement('div');ch.className='cathead';ch.textContent=c.cat;cat.appendChild(ch);
-      const grid=document.createElement('div');grid.className='grid';
-      c.items.forEach(it=>grid.appendChild(tileEl(it)));
-      cat.appendChild(grid);sec.appendChild(cat);
-    });
-    root.appendChild(sec);
-  });
-  // chips
-  chipsEl.innerHTML='';
-  const all=document.createElement('button');all.className='chip active';all.dataset.sec='all';all.textContent='All';chipsEl.appendChild(all);
-  groups.forEach((g,gi)=>{const b=document.createElement('button');b.className='chip';b.dataset.sec='s'+gi;b.textContent=g.sec;chipsEl.appendChild(b);});
-  chipsEl.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
-    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');activeSec=c.dataset.sec;apply();});
-  const tot=(DATA[activeMode]||[]).length;
-  countEl.textContent=`${tot} ${activeMode==='Tools'?'tools':'sources'} · ${groups.length} sections`;
-  apply();
-}
-function apply(){
-  const q=search.value.trim().toLowerCase();let any=false;
-  root.querySelectorAll('.super').forEach(sec=>{
-    const secMatch=(activeSec==='all'||sec.dataset.sec===activeSec);let secHas=false;
-    sec.querySelectorAll('.cat').forEach(cat=>{let catHas=false;
-      cat.querySelectorAll('.tool').forEach(t=>{const m=secMatch&&(!q||t.dataset.name.includes(q));t.classList.toggle('hide',!m);if(m)catHas=true;});
-      cat.classList.toggle('hide',!catHas);if(catHas)secHas=true;});
-    sec.classList.toggle('hide',!secHas);if(secHas)any=true;});
-  empty.style.display=any?'none':'block';
-}
-search.addEventListener('input',apply);
-document.querySelectorAll('.site-tab[data-mode]').forEach(b=>b.onclick=()=>{
-  activeMode=b.dataset.mode;activeSec='all';search.value='';
-  history.replaceState(null,'',activeMode==='Sources'?'/?mode=Sources':'/');
-  document.querySelectorAll('.site-tab[data-mode]').forEach(x=>{
-    const isActive=x===b;
-    x.classList.toggle('active',isActive);
-    x.setAttribute('aria-pressed',String(isActive));
-  });
-  renderMode();
-});
-document.querySelectorAll('.site-tab[data-mode]').forEach(x=>{
-  const isActive=x.dataset.mode===activeMode;
-  x.classList.toggle('active',isActive);
-  x.setAttribute('aria-pressed',String(isActive));
-});
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      scrollbar-width: none;
+    }
 
-fetch('/api/data').then(r=>r.json()).then(d=>{
-  (d.items||[]).forEach(it=>{(DATA[it.mode]||DATA.Tools).push(it);});
-  renderMode();
-}).catch(e=>{root.innerHTML='<div class="loading">Could not load data. Check the AIRTABLE_TOKEN setting in Vercel.<br><small>'+e+'</small></div>';});
-</script>
-</body></html>
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar { display: none; }
+
+    body {
+      overflow: hidden;
+      background: #0a101a;
+      color: var(--ink);
+      font-family: "DM Sans", "Segoe UI", sans-serif;
+    }
+
+    button,
+    input { font: inherit; }
+
+    a { color: inherit; text-decoration: none; }
+
+    .material-symbols-rounded {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      line-height: 1;
+    }
+
+    .home {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      min-height: 680px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .background-photo {
+      position: absolute;
+      inset: 0;
+      z-index: -4;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 44%;
+      filter: saturate(.94) contrast(1.02);
+    }
+
+    .atmosphere {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(4, 8, 15, .7) 0%, rgba(5, 10, 18, .2) 25%, rgba(5, 9, 16, .03) 56%, rgba(5, 9, 16, .74) 100%),
+        radial-gradient(circle at 50% 24%, rgba(16, 22, 34, .08) 0%, rgba(5, 9, 16, .18) 55%, rgba(4, 7, 13, .32) 100%);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      padding: 0 clamp(24px, 4vw, 64px);
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(5, 9, 16, .35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      box-shadow: 0 8px 24px rgba(115, 92, 255, .3);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(20px, 3vw, 42px);
+    }
+
+    .nav a {
+      position: relative;
+      padding: 10px 0;
+      color: rgba(240, 243, 250, .7);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color .2s ease, background .2s ease;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: #fff;
+      outline: none;
+    }
+
+    .nav a[aria-current="page"] {
+      color: var(--violet-soft);
+    }
+
+    .nav a[aria-current="page"]::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 2px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--violet);
+      box-shadow: 0 0 14px rgba(139, 120, 255, .6);
+    }
+
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      gap: clamp(24px, 3.2vw, 48px);
+    }
+
+    .profile {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(178, 164, 255, .24);
+      border-radius: 50%;
+      background: rgba(112, 84, 217, .3);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: min(980px, calc(100% - 48px));
+      margin: clamp(56px, 7.2vh, 76px) auto 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 5vw, 66px);
+      line-height: 1.05;
+      letter-spacing: -.055em;
+      text-shadow: 0 4px 30px rgba(0, 0, 0, .46);
+    }
+
+    h1 .name { color: var(--violet-soft); }
+
+    .search {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      width: min(880px, 100%);
+      height: 66px;
+      margin-top: 28px;
+      padding: 0 12px 0 21px;
+      border: 1px solid rgba(167, 151, 255, .78);
+      border-radius: 999px;
+      background: rgba(8, 12, 21, .76);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 4px rgba(110, 87, 255, .08);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .search > .material-symbols-rounded {
+      color: rgba(255, 255, 255, .64);
+      font-size: 23px;
+    }
+
+    .search input {
+      min-width: 0;
+      height: 100%;
+      border: 0;
+      outline: 0;
+      padding: 0 14px;
+      background: transparent;
+      color: #fff;
+      font-size: 17px;
+    }
+
+    .search input::placeholder { color: rgba(231, 235, 244, .55); }
+
+    .search button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 43px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      background: linear-gradient(135deg, #8d79ff, #6755e6);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 9px 24px rgba(81, 60, 203, .32);
+    }
+
+    .search button:hover { filter: brightness(1.08); }
+    .search button:focus-visible { outline: 3px solid rgba(255, 255, 255, .55); }
+    .search button .material-symbols-rounded { font-size: 18px; }
+
+    .shortcuts {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(76px, 1fr));
+      gap: clamp(13px, 2.2vw, 28px);
+      width: min(860px, 100%);
+      margin-top: 31px;
+    }
+
+    .shortcut {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      color: rgba(249, 250, 253, .9);
+      font-size: 13px;
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, .7);
+    }
+
+    .shortcut-icon {
+      display: grid;
+      place-items: center;
+      width: 80px;
+      height: 80px;
+      border: 1px solid rgba(178, 164, 255, .2);
+      border-radius: 50%;
+      background: rgba(10, 14, 23, .54);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .shortcut:hover .shortcut-icon,
+    .shortcut:focus-visible .shortcut-icon {
+      transform: translateY(-4px);
+      border-color: rgba(178, 164, 255, .62);
+      background: rgba(21, 25, 38, .9);
+    }
+
+    .shortcut:focus-visible { outline: none; }
+
+    .shortcut-icon img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .shortcut:first-child .shortcut-icon img {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+    }
+
+    .daily-rail {
+      position: absolute;
+      z-index: 4;
+      left: 24px;
+      right: 24px;
+      bottom: 18px;
+      display: grid;
+      grid-template-columns: minmax(180px, .8fr) minmax(390px, 1.45fr) minmax(260px, 1fr);
+      align-items: center;
+      min-height: 64px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 20px;
+      background: rgba(7, 11, 19, .74);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .26), inset 0 1px 0 rgba(255, 255, 255, .06);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .rail-block {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      min-height: 42px;
+      padding: 0 22px;
+    }
+
+    .rail-block + .rail-block { border-left: 1px solid rgba(255, 255, 255, .1); }
+
+    .weather {
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .weather .material-symbols-rounded {
+      color: #ffe0a2;
+      font-size: 27px;
+      font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+
+    .weather-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .weather-copy small { color: var(--muted); font-weight: 500; }
+
+    .focus {
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .date {
+      flex: 0 0 auto;
+      color: rgba(244, 247, 252, .72);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .focus-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      width: min(290px, 100%);
+      height: 36px;
+      padding: 0 11px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .055);
+    }
+
+    .focus-input-wrap .material-symbols-rounded {
+      flex: 0 0 auto;
+      color: var(--violet-soft);
+      font-size: 18px;
+    }
+
+    .focus-input-wrap input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .focus-input-wrap input::placeholder { color: rgba(235, 239, 249, .58); }
+
+    .reading {
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .reading a {
+      padding: 8px 10px;
+      border-radius: 9px;
+      color: rgba(239, 242, 248, .68);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .reading a:hover,
+    .reading a:focus-visible {
+      color: white;
+      background: rgba(255, 255, 255, .08);
+      outline: none;
+    }
+
+    @media (max-width: 1050px) {
+      .stage { margin-top: 54px; }
+      .daily-rail { grid-template-columns: .75fr 1.4fr; }
+      .reading { display: none; }
+    }
+
+    @media (max-width: 760px) {
+      body { overflow-y: auto; }
+
+      .home {
+        height: auto;
+        min-height: 100dvh;
+        overflow: visible;
+        padding-bottom: 22px;
+      }
+
+      .background-photo {
+        position: fixed;
+        object-position: 50% 56%;
+      }
+
+      .atmosphere { position: fixed; }
+
+      .topbar {
+        height: 64px;
+        padding: 0 16px;
+      }
+
+      .brand span { display: none; }
+
+      .nav-wrap { gap: 0; }
+      .nav { gap: 15px; }
+      .profile { display: none; }
+
+      .nav a {
+        padding: 8px 0;
+        font-size: 12px;
+      }
+
+      .stage {
+        width: min(100% - 32px, 560px);
+        margin-top: 48px;
+      }
+
+      .eyebrow { font-size: 11px; }
+      h1 { font-size: clamp(36px, 10vw, 50px); }
+
+      .search {
+        grid-template-columns: 25px 1fr 42px;
+        height: 58px;
+        margin-top: 24px;
+        padding: 0 8px 0 17px;
+      }
+
+      .search input { padding: 0 9px; font-size: 15px; }
+
+      .search button {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .search button span:last-child { display: none; }
+
+      .shortcuts {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px 9px;
+        margin-top: 28px;
+      }
+
+      .shortcut-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+      }
+
+      .shortcut-icon img { width: 34px; height: 34px; }
+
+      .daily-rail {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        grid-template-columns: 1fr;
+        width: min(100% - 32px, 560px);
+        margin: 34px auto 0;
+      }
+
+      .rail-block { padding: 14px 18px; }
+      .rail-block + .rail-block { border-left: 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+      .focus { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .focus-input-wrap { width: 100%; }
+      .reading { display: flex; justify-content: flex-start; flex-wrap: wrap; }
+    }
+
+    @media (max-height: 760px) and (min-width: 761px) {
+      .stage { margin-top: 35px; }
+      .shortcuts { margin-top: 24px; }
+      .shortcut-icon { width: 70px; height: 70px; border-radius: 50%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="home">
+    <img class="background-photo" src="/assets/rory-beach-home-web.jpg" alt="Rory running on the beach">
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Aurora home">
+        <img src="/aurora-icon.svg" alt="">
+        <span>Aurora</span>
+      </a>
+      <div class="nav-wrap">
+        <nav class="nav" aria-label="Aurora navigation">
+          <a href="/" aria-current="page">Home</a>
+          <a href="/tools.html?mode=Tools">Tools</a>
+          <a href="/tools.html?mode=Sources">Sources</a>
+          <a href="/subscriptions.html">Subscriptions</a>
+        </nav>
+        <span class="profile" aria-label="Chadi">C</span>
+      </div>
+    </header>
+
+    <section class="stage" aria-labelledby="greeting">
+      <h1 id="greeting"><span id="greetingPrefix">Good evening,</span> <span class="name">Chadi</span></h1>
+
+      <form class="search" action="https://www.google.com/search" method="get" role="search">
+        <span class="material-symbols-rounded" aria-hidden="true">search</span>
+        <input type="search" name="q" autocomplete="off" placeholder="Search Google" aria-label="Search Google">
+        <button type="submit"><span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span><span>Search</span></button>
+      </form>
+
+      <div class="shortcuts" aria-label="Most visited">
+        <a class="shortcut" href="/tools.html?mode=Tools"><span class="shortcut-icon"><img src="/aurora-icon.svg" alt=""></span><span>Aurora</span></a>
+        <a class="shortcut" href="https://maps.google.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=maps.google.com&sz=128" alt=""></span><span>Maps</span></a>
+        <a class="shortcut" href="https://www.youtube.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt=""></span><span>YouTube</span></a>
+        <a class="shortcut" href="https://onedrive.live.com"><span class="shortcut-icon"><img src="https://w7.pngwing.com/pngs/786/952/png-transparent-microsoft-onedrive-drive-office-365-logo-icon.png" alt=""></span><span>OneDrive</span></a>
+        <a class="shortcut" href="https://www.linkedin.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt=""></span><span>LinkedIn</span></a>
+        <a class="shortcut" href="https://www.flashscore.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=flashscore.com&sz=128" alt=""></span><span>Flashscore</span></a>
+        <a class="shortcut" href="https://lifehacker.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=lifehacker.com&sz=128" alt=""></span><span>Lifehacker</span></a>
+      </div>
+    </section>
+
+    <aside class="daily-rail" aria-label="Daily brief">
+      <div class="rail-block weather">
+        <span class="material-symbols-rounded" id="weatherIcon" aria-hidden="true">partly_cloudy_day</span>
+        <span class="weather-copy"><strong id="weatherText">Lausanne · loading</strong><small id="weatherDetail">Current weather</small></span>
+      </div>
+      <div class="rail-block focus">
+        <span class="date" id="today">Today</span>
+        <label class="focus-input-wrap" for="focusInput"><span class="material-symbols-rounded" aria-hidden="true">target</span><input id="focusInput" type="text" maxlength="80" placeholder="Choose today’s focus"></label>
+      </div>
+      <div class="rail-block reading" aria-label="Daily reading">
+        <a href="https://www.reuters.com/business/">Business</a>
+        <a href="https://techcrunch.com/">Tech</a>
+        <a href="https://www.swissinfo.ch/eng/">Switzerland</a>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    (() => {
+      const now = new Date();
+      const hour = now.getHours();
+      const greeting = hour >= 5 && hour < 12 ? "Good morning," : hour >= 12 && hour < 18 ? "Good afternoon," : "Good evening,";
+      document.getElementById("greetingPrefix").textContent = greeting;
+      document.getElementById("today").textContent = new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }).format(now);
+
+      const focusInput = document.getElementById("focusInput");
+      const focusKey = "aurora.dailyFocus.v2";
+      try { focusInput.value = localStorage.getItem(focusKey) || ""; } catch (_) {}
+      focusInput.addEventListener("input", () => {
+        try { localStorage.setItem(focusKey, focusInput.value); } catch (_) {}
+      });
+      focusInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") focusInput.blur();
+      });
+
+      const weatherIcon = document.getElementById("weatherIcon");
+      const weatherText = document.getElementById("weatherText");
+      const weatherDetail = document.getElementById("weatherDetail");
+      const weatherStates = code => {
+        if (code === 0) return ["sunny", "Clear sky"];
+        if (code <= 3) return ["partly_cloudy_day", "Partly cloudy"];
+        if (code === 45 || code === 48) return ["foggy", "Foggy"];
+        if (code >= 51 && code <= 67) return ["rainy", "Rain"];
+        if (code >= 71 && code <= 77) return ["weather_snowy", "Snow"];
+        if (code >= 80 && code <= 82) return ["rainy", "Rain showers"];
+        if (code >= 85 && code <= 86) return ["weather_snowy", "Snow showers"];
+        if (code >= 95) return ["thunderstorm", "Thunderstorm"];
+        return ["partly_cloudy_day", "Current weather"];
+      };
+
+      fetch("https://api.open-meteo.com/v1/forecast?latitude=46.5197&longitude=6.6323&current=temperature_2m,weather_code&timezone=Europe%2FZurich&forecast_days=1")
+        .then(response => response.ok ? response.json() : Promise.reject(new Error("Weather unavailable")))
+        .then(data => {
+          const current = data.current;
+          const [icon, condition] = weatherStates(current.weather_code);
+          weatherIcon.textContent = icon;
+          weatherText.textContent = `Lausanne · ${Math.round(current.temperature_2m)}°`;
+          weatherDetail.textContent = condition;
+        })
+        .catch(() => {
+          weatherText.textContent = "Lausanne";
+          weatherDetail.textContent = "Weather unavailable";
+        });
+    })();
+  </script>
+</body>
+</html>
+
