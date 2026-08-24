@@ -65,17 +65,16 @@
       padding: 22px 0 72px;
     }
 
-    .appbar,
-    .nav-cluster {
+    .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
 
-    .appbar { padding: 0 0 30px; }
+    .site-header { padding: 0 0 30px; }
 
-    .brand {
+    .site-brand {
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -97,32 +96,43 @@
       box-shadow: 0 8px 20px rgba(80, 77, 255, 0.24);
     }
 
-    .mainnav {
+    .site-tabs {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(13, 22, 39, 0.84);
+      align-items: flex-end;
+      gap: 4px;
+      margin-top: 22px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
     }
 
-    .mainnav a {
+    .site-tab {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 38px;
-      padding: 0 15px;
-      border-radius: 10px;
+      min-height: 48px;
+      padding: 0 19px;
+      border-radius: 11px 11px 0 0;
       color: var(--muted);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 750;
+      white-space: nowrap;
       transition: 160ms ease;
     }
 
-    .mainnav a:hover { color: #fff; background: #142039; }
-    .mainnav a.active { color: #fff; background: linear-gradient(135deg, #765cff, #527fff); }
+    .site-tab:hover { color: #fff; background: #111c30; }
+    .site-tab.active { color: #fff; background: linear-gradient(180deg, rgba(118, 98, 255, 0.18), rgba(118, 98, 255, 0.05)); }
+    .site-tab.active::after {
+      position: absolute;
+      right: 10px;
+      bottom: -1px;
+      left: 10px;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: var(--violet);
+      content: "";
+    }
 
     .logout-button,
     .icon-button {
@@ -347,6 +357,7 @@
     }
 
     .panel-note { color: #4f5f78; font-size: 14px; font-weight: 500; }
+    .chart-instruction { margin: 0; color: #687994; font-size: 13px; }
 
     .chart { display: grid; gap: 15px; }
 
@@ -355,7 +366,21 @@
       grid-template-columns: 130px minmax(120px, 1fr) 92px;
       align-items: center;
       gap: 16px;
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: 150ms ease;
     }
+
+    .chart-row:hover { border-color: #2a3c5f; background: rgba(24, 37, 61, 0.52); }
+    .chart-row:focus-visible { outline: 3px solid rgba(118, 98, 255, 0.35); outline-offset: 2px; }
+    .chart-row.selected { border-color: #6557d7; background: rgba(118, 98, 255, 0.12); }
+    .chart-row.dimmed { opacity: 0.48; }
 
     .chart-label {
       overflow: hidden;
@@ -376,7 +401,22 @@
     }
 
     .chart-value { color: #e1e6f0; font-size: 14px; font-weight: 800; text-align: right; white-space: nowrap; }
+    .table-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
     .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .category-filter {
+      min-height: 40px;
+      padding: 0 13px;
+      border: 1px solid #5144ac;
+      border-radius: 999px;
+      background: rgba(118, 98, 255, 0.13);
+      color: #b8adff;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .category-filter:hover { color: #fff; background: rgba(118, 98, 255, 0.22); }
 
     .filter-button {
       min-height: 40px;
@@ -397,7 +437,7 @@
 
     table { width: calc(100% - 1px); border-collapse: collapse; table-layout: fixed; }
     th {
-      padding: 0 14px 14px;
+      padding: 0;
       border-bottom: 1px solid var(--border);
       color: #6f7f9b;
       font-size: 12px;
@@ -406,6 +446,35 @@
       text-align: left;
       text-transform: uppercase;
     }
+
+    .sort-button {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      min-height: 44px;
+      padding: 0 14px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      font-weight: inherit;
+      letter-spacing: inherit;
+      text-align: left;
+      text-transform: inherit;
+    }
+
+    .sort-button:hover { color: #dbe3f4; background: rgba(31, 44, 70, 0.22); }
+    .sort-button:focus-visible { outline: 2px solid var(--violet); outline-offset: -3px; }
+    .sort-indicator { color: #4e607d; font-size: 13px; letter-spacing: 0; }
+    th[aria-sort="ascending"] .sort-button,
+    th[aria-sort="descending"] .sort-button { color: #c8c0ff; }
+    th[aria-sort="ascending"] .sort-indicator,
+    th[aria-sort="descending"] .sort-indicator { color: var(--violet); }
+    .edit-header { padding: 0 14px; }
+
+    .mobile-sort { display: none; }
 
     td {
       padding: 14px;
@@ -539,16 +608,13 @@
       .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .chart-row { grid-template-columns: 110px minmax(100px, 1fr) 82px; }
       .panel { padding: 24px; }
-      .appbar { align-items: flex-start; }
-      .nav-cluster { align-items: flex-end; flex-direction: column; }
     }
 
     @media (max-width: 680px) {
       .shell { width: min(100% - 24px, 1180px); padding-top: 14px; }
-      .appbar { align-items: stretch; flex-direction: column; padding-bottom: 34px; }
-      .nav-cluster { align-items: stretch; gap: 10px; }
-      .mainnav { width: 100%; overflow-x: auto; }
-      .mainnav a { flex: 1 0 auto; padding-inline: 13px; }
+      .site-header { padding-bottom: 34px; }
+      .site-tabs { margin-top: 16px; }
+      .site-tab { flex: 1 0 auto; padding-inline: 14px; }
       .logout-button { align-self: flex-end; }
       .login-gate { margin-top: 2vh; padding: 26px 22px; }
       .hero { align-items: stretch; flex-direction: column; }
@@ -558,11 +624,16 @@
       .metric-label { margin-bottom: 15px; }
       .panel { padding: 20px 16px; }
       .panel-heading { align-items: flex-start; flex-direction: column; margin-bottom: 20px; }
+      .table-toolbar { width: 100%; justify-content: flex-start; }
       .chart-row { grid-template-columns: 80px minmax(80px, 1fr) 70px; gap: 10px; }
       .chart-label, .chart-value { font-size: 12px; }
       .bar-track { height: 26px; }
       .wishlist-form { grid-template-columns: 1fr; }
       .wishlist-form .secondary-action { justify-self: stretch; }
+      .mobile-sort { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 15px; }
+      .mobile-sort select { min-height: 42px; }
+      .sort-direction { min-height: 42px; padding: 0 13px; border: 1px solid var(--border); border-radius: 11px; background: #0a1221; color: var(--muted); cursor: pointer; font-weight: 750; }
+      .sort-direction:disabled { cursor: not-allowed; opacity: 0.5; }
 
       .table-wrap { overflow: visible; }
       table, tbody, tr, td { display: block; width: 100%; }
@@ -599,19 +670,19 @@
 </head>
 <body>
   <main class="shell">
-    <header class="appbar">
-      <a class="brand" href="/">
-        <span class="brand-mark" aria-hidden="true">🚀</span>
-        <span>My Command Center</span>
-      </a>
-      <div class="nav-cluster">
-        <nav class="mainnav" aria-label="Command Center sections">
-          <a href="/?mode=Tools">🧰 Tools</a>
-          <a href="/?mode=Sources">📰 Sources</a>
-          <a class="active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
-        </nav>
+    <header class="site-header">
+      <div class="header-top">
+        <a class="site-brand" href="/">
+          <span class="brand-mark" aria-hidden="true">🚀</span>
+          <span>My Command Center</span>
+        </a>
         <button class="logout-button" id="logoutButton" type="button" hidden>Sign out</button>
       </div>
+      <nav class="site-tabs" aria-label="Command Center sections">
+        <a class="site-tab" href="/?mode=Tools">🧰 Tools</a>
+        <a class="site-tab" href="/?mode=Sources">📰 Sources</a>
+        <a class="site-tab active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
+      </nav>
     </header>
 
     <section class="login-gate" id="loginGate" aria-labelledby="loginTitle">
@@ -648,6 +719,7 @@
       <section class="panel" aria-labelledby="chartTitle">
         <div class="panel-heading">
           <h2 class="panel-title" id="chartTitle">Spend by Category <span class="panel-note">(yearly, active only)</span></h2>
+          <p class="chart-instruction">Select a category to filter the table</p>
         </div>
         <div class="chart" id="categoryChart"><div class="loading-state">Calculating category spend…</div></div>
       </section>
@@ -655,23 +727,39 @@
       <section class="panel" aria-labelledby="tableTitle">
         <div class="panel-heading">
           <h2 class="panel-title" id="tableTitle">All Subscriptions</h2>
-          <div class="filter-tabs" aria-label="Filter subscriptions">
-            <button class="filter-button active" type="button" data-filter="All">All</button>
-            <button class="filter-button" type="button" data-filter="Active">Active</button>
-            <button class="filter-button" type="button" data-filter="Paused">Paused</button>
+          <div class="table-toolbar">
+            <button class="category-filter" id="categoryFilter" type="button" hidden></button>
+            <div class="filter-tabs" aria-label="Filter subscriptions by status">
+              <button class="filter-button active" type="button" data-filter="All">All</button>
+              <button class="filter-button" type="button" data-filter="Active">Active</button>
+              <button class="filter-button" type="button" data-filter="Paused">Paused</button>
+            </div>
           </div>
+        </div>
+        <div class="mobile-sort" aria-label="Sort subscriptions">
+          <label class="sr-only" for="mobileSort">Sort subscriptions by</label>
+          <select id="mobileSort">
+            <option value="recommended">Recommended order</option>
+            <option value="name">Subscription name</option>
+            <option value="category">Category</option>
+            <option value="status">Status</option>
+            <option value="yearly">Yearly price</option>
+            <option value="monthly">Monthly price</option>
+            <option value="paidVia">Paid via</option>
+          </select>
+          <button class="sort-direction" id="sortDirection" type="button">Ascending ↑</button>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th style="width: 22%">Subscription</th>
-                <th style="width: 17%">Category</th>
-                <th style="width: 14%">Status</th>
-                <th style="width: 11%">Yearly</th>
-                <th style="width: 11%">Monthly</th>
-                <th style="width: 19%">Paid via</th>
-                <th style="width: 6%"><span class="sr-only">Edit</span></th>
+                <th style="width: 22%" aria-sort="none"><button class="sort-button" type="button" data-sort="name">Subscription <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 17%" aria-sort="none"><button class="sort-button" type="button" data-sort="category">Category <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 14%" aria-sort="none"><button class="sort-button" type="button" data-sort="status">Status <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 11%" aria-sort="none"><button class="sort-button" type="button" data-sort="yearly">Yearly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 11%" aria-sort="none"><button class="sort-button" type="button" data-sort="monthly">Monthly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 19%" aria-sort="none"><button class="sort-button" type="button" data-sort="paidVia">Paid via <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th class="edit-header" style="width: 6%"><span class="sr-only">Edit</span></th>
               </tr>
             </thead>
             <tbody id="subscriptionRows"><tr><td colspan="7"><div class="loading-state">Loading subscriptions…</div></td></tr></tbody>
@@ -756,6 +844,10 @@
     const categoryChart = document.getElementById("categoryChart");
     const subscriptionRows = document.getElementById("subscriptionRows");
     const filterButtons = [...document.querySelectorAll(".filter-button")];
+    const categoryFilter = document.getElementById("categoryFilter");
+    const sortButtons = [...document.querySelectorAll(".sort-button")];
+    const mobileSort = document.getElementById("mobileSort");
+    const sortDirectionButton = document.getElementById("sortDirection");
     const dialog = document.getElementById("subscriptionDialog");
     const dialogTitle = document.getElementById("dialogTitle");
     const subscriptionForm = document.getElementById("subscriptionForm");
@@ -768,6 +860,9 @@
 
     let subscriptions = [];
     let activeFilter = "All";
+    let activeCategory = "All";
+    let sortKey = "recommended";
+    let sortDirection = "asc";
     let wishlist = [];
     let toastTimer;
 
@@ -796,11 +891,39 @@
     function sortSubscriptions(items) {
       const statusRank = { Active: 0, Paused: 1 };
       return [...items].sort((a, b) => {
-        const byStatus = (statusRank[a.status] ?? 9) - (statusRank[b.status] ?? 9);
-        if (byStatus) return byStatus;
-        const byYearly = (a.yearly || 0) - (b.yearly || 0);
-        return byYearly || a.name.localeCompare(b.name);
+        if (sortKey === "recommended") {
+          const byStatus = (statusRank[a.status] ?? 9) - (statusRank[b.status] ?? 9);
+          if (byStatus) return byStatus;
+          const byYearly = (a.yearly || 0) - (b.yearly || 0);
+          return byYearly || a.name.localeCompare(b.name);
+        }
+
+        const numeric = sortKey === "yearly" || sortKey === "monthly";
+        const left = numeric ? Number(a[sortKey] || 0) : String(a[sortKey] || "");
+        const right = numeric ? Number(b[sortKey] || 0) : String(b[sortKey] || "");
+        const comparison = numeric ? left - right : left.localeCompare(right, "en", { sensitivity: "base" });
+        return (comparison || a.name.localeCompare(b.name)) * (sortDirection === "asc" ? 1 : -1);
       });
+    }
+
+    function syncSortControls() {
+      sortButtons.forEach((button) => {
+        const selected = button.dataset.sort === sortKey;
+        const header = button.closest("th");
+        const indicator = button.querySelector(".sort-indicator");
+        header.setAttribute("aria-sort", selected ? (sortDirection === "asc" ? "ascending" : "descending") : "none");
+        indicator.textContent = selected ? (sortDirection === "asc" ? "↑" : "↓") : "↕";
+      });
+      mobileSort.value = sortKey;
+      sortDirectionButton.disabled = sortKey === "recommended";
+      sortDirectionButton.textContent = sortKey === "recommended" ? "Default" : (sortDirection === "asc" ? "Ascending ↑" : "Descending ↓");
+    }
+
+    function setSort(nextKey) {
+      if (nextKey === sortKey && nextKey !== "recommended") sortDirection = sortDirection === "asc" ? "desc" : "asc";
+      else { sortKey = nextKey; sortDirection = "asc"; }
+      syncSortControls();
+      renderTable();
     }
 
     function renderMetrics() {
@@ -824,12 +947,22 @@
       const max = Math.max(...rows.map(([, value]) => value));
       rows.forEach(([category, value]) => {
         const colors = categoryStyle(category);
-        const row = document.createElement("div"); row.className = "chart-row";
+        const row = document.createElement("button"); row.className = "chart-row"; row.type = "button";
+        const selected = activeCategory === category;
+        row.classList.toggle("selected", selected);
+        row.classList.toggle("dimmed", activeCategory !== "All" && !selected);
+        row.setAttribute("aria-pressed", String(selected));
+        row.title = selected ? `Clear ${category} filter` : `Show ${category} subscriptions`;
         const label = document.createElement("div"); label.className = "chart-label"; label.textContent = category; label.title = category;
         const track = document.createElement("div"); track.className = "bar-track";
         const fill = document.createElement("div"); fill.className = "bar-fill"; fill.style.setProperty("--bar-start", colors.start); fill.style.setProperty("--bar-end", colors.end); track.appendChild(fill);
         const amount = document.createElement("div"); amount.className = "chart-value"; amount.textContent = formatCHF(value);
         row.append(label, track, amount); categoryChart.appendChild(row);
+        row.addEventListener("click", () => {
+          activeCategory = selected ? "All" : category;
+          renderChart();
+          renderTable();
+        });
         requestAnimationFrame(() => { fill.style.width = `${Math.max(4, (value / max) * 100)}%`; });
       });
     }
@@ -840,11 +973,21 @@
     }
 
     function renderTable() {
-      const visible = sortSubscriptions(activeFilter === "All" ? subscriptions : subscriptions.filter((item) => item.status === activeFilter));
+      const filtered = subscriptions.filter((item) => {
+        const matchesStatus = activeFilter === "All" || item.status === activeFilter;
+        const matchesCategory = activeCategory === "All" || item.category === activeCategory;
+        return matchesStatus && matchesCategory;
+      });
+      const visible = sortSubscriptions(filtered);
+      categoryFilter.hidden = activeCategory === "All";
+      categoryFilter.textContent = activeCategory === "All" ? "" : `${activeCategory} ×`;
+      categoryFilter.title = activeCategory === "All" ? "" : `Clear ${activeCategory} category filter`;
+      syncSortControls();
       subscriptionRows.replaceChildren();
       if (!visible.length) {
         const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7;
-        const empty = document.createElement("div"); empty.className = "empty-state"; empty.textContent = `No ${activeFilter.toLowerCase()} subscriptions.`;
+        const empty = document.createElement("div"); empty.className = "empty-state";
+        empty.textContent = activeCategory === "All" ? `No ${activeFilter.toLowerCase()} subscriptions.` : `No ${activeFilter.toLowerCase()} subscriptions in ${activeCategory}.`;
         td.appendChild(empty); tr.appendChild(td); subscriptionRows.appendChild(tr); return;
       }
       visible.forEach((item) => {
@@ -881,6 +1024,7 @@
       try {
         const data = await apiRequest("/api/subscriptions");
         subscriptions = Array.isArray(data.subscriptions) ? data.subscriptions : [];
+        if (activeCategory !== "All" && !subscriptions.some((item) => item.category === activeCategory)) activeCategory = "All";
         loginGate.hidden = true; dashboard.hidden = false; logoutButton.hidden = false;
         renderAll();
         const duplicates = Number(data.meta?.duplicateSubscriptionCount || 0);
@@ -938,6 +1082,21 @@
     filterButtons.forEach((button) => button.addEventListener("click", () => {
       activeFilter = button.dataset.filter; filterButtons.forEach((item) => item.classList.toggle("active", item === button)); renderTable();
     }));
+
+    categoryFilter.addEventListener("click", () => {
+      activeCategory = "All";
+      renderChart();
+      renderTable();
+    });
+
+    sortButtons.forEach((button) => button.addEventListener("click", () => setSort(button.dataset.sort)));
+    mobileSort.addEventListener("change", () => setSort(mobileSort.value));
+    sortDirectionButton.addEventListener("click", () => {
+      if (sortKey === "recommended") return;
+      sortDirection = sortDirection === "asc" ? "desc" : "asc";
+      syncSortControls();
+      renderTable();
+    });
 
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault(); loginError.textContent = ""; loginButton.disabled = true; loginButton.textContent = "Signing in…";

@@ -8,14 +8,17 @@
 <title>My Command Center</title>
 <style>
 *{box-sizing:border-box;}
-body{margin:0;background:#0b0d11;font-family:'Segoe UI',Arial,sans-serif;color:#cdd3df;}
-.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 70px;}
-h1{color:#fff;font-size:30px;margin:0 0 12px;}
+body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#cdd3df;}
+.wrap{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:22px 0 70px;}
+.site-header{padding-bottom:18px;}
+.site-brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:17px;font-weight:800;}
+.brand-mark{display:grid;width:36px;height:36px;place-items:center;border:1px solid #415189;border-radius:11px;background:linear-gradient(145deg,#5264ff,#725cff);box-shadow:0 8px 20px rgba(80,77,255,.24);}
+.site-tabs{display:flex;align-items:flex-end;gap:4px;margin-top:22px;border-bottom:1px solid #21314e;overflow-x:auto;}
+.site-tab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 19px;border:0;border-radius:11px 11px 0 0;background:transparent;color:#8997af;font-family:inherit;font-size:14px;font-weight:750;cursor:pointer;text-decoration:none;white-space:nowrap;transition:.15s;}
+.site-tab:hover{color:#fff;background:#111c30;}
+.site-tab.active{color:#fff;background:linear-gradient(180deg,rgba(118,98,255,.18),rgba(118,98,255,.05));}
+.site-tab.active::after{position:absolute;right:10px;bottom:-1px;left:10px;height:3px;border-radius:3px 3px 0 0;background:#7662ff;content:"";}
 .sub{color:#7b8190;font-size:14px;margin:0 0 18px;}
-.toggle{display:inline-flex;background:#11141a;border:1px solid #2a2e38;border-radius:999px;padding:5px;gap:4px;margin-bottom:14px;}
-.modebtn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;border-radius:999px;border:none;background:transparent;color:#aeb4c0;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:.15s;}
-.modebtn:hover{color:#fff;}
-.modebtn.active{background:#4c7dff;color:#fff;box-shadow:0 2px 10px rgba(76,125,255,.4);}
 .bar{position:sticky;top:0;z-index:30;background:rgba(11,13,17,.94);backdrop-filter:blur(8px);padding:14px 0 12px;margin-bottom:6px;border-bottom:1px solid #1b1f27;}
 #search{width:100%;padding:13px 16px;border-radius:12px;border:1px solid #2a2e38;background:#11141a;color:#fff;font-size:15px;outline:none;}
 #search::placeholder{color:#6b7180;}
@@ -40,14 +43,20 @@ h1{color:#fff;font-size:30px;margin:0 0 12px;}
 .cat.hide,.super.hide,.tool.hide{display:none;}
 .empty{color:#6b7180;font-size:15px;padding:40px 0;text-align:center;display:none;}
 .loading{color:#7b8190;padding:60px 0;text-align:center;font-size:16px;}
+@media(max-width:680px){.wrap{width:calc(100% - 24px);padding:14px 0 60px;}.site-tabs{margin-top:16px}.site-tab{flex:1 0 auto;padding:0 14px}.bar{top:0}.superhead{font-size:22px;padding:16px 18px}.grid{gap:15px}.tool{width:90px}}
 </style></head>
 <body><div class="wrap">
-  <h1>🚀 My Command Center</h1>
-  <div class="toggle">
-    <button class="modebtn active" data-mode="Tools">🧰 Tools</button>
-    <button class="modebtn" data-mode="Sources">📰 Sources</button>
-    <a class="modebtn" href="/subscriptions.html">💳 Subscriptions</a>
-  </div>
+  <header class="site-header">
+    <a class="site-brand" href="/">
+      <span class="brand-mark" aria-hidden="true">🚀</span>
+      <span>My Command Center</span>
+    </a>
+    <nav class="site-tabs" aria-label="Command Center sections">
+      <button class="site-tab active" data-mode="Tools" type="button" aria-pressed="true">🧰 Tools</button>
+      <button class="site-tab" data-mode="Sources" type="button" aria-pressed="false">📰 Sources</button>
+      <a class="site-tab" href="/subscriptions.html">💳 Subscriptions</a>
+    </nav>
+  </header>
   <p class="sub" id="count"></p>
   <div class="bar">
     <input id="search" type="text" placeholder="🔍  Search…" autocomplete="off">
@@ -138,13 +147,21 @@ function apply(){
   empty.style.display=any?'none':'block';
 }
 search.addEventListener('input',apply);
-document.querySelectorAll('.modebtn[data-mode]').forEach(b=>b.onclick=()=>{
+document.querySelectorAll('.site-tab[data-mode]').forEach(b=>b.onclick=()=>{
   activeMode=b.dataset.mode;activeSec='all';search.value='';
   history.replaceState(null,'',activeMode==='Sources'?'/?mode=Sources':'/');
-  document.querySelectorAll('.modebtn[data-mode]').forEach(x=>x.classList.toggle('active',x===b));
+  document.querySelectorAll('.site-tab[data-mode]').forEach(x=>{
+    const isActive=x===b;
+    x.classList.toggle('active',isActive);
+    x.setAttribute('aria-pressed',String(isActive));
+  });
   renderMode();
 });
-document.querySelectorAll('.modebtn[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode===activeMode));
+document.querySelectorAll('.site-tab[data-mode]').forEach(x=>{
+  const isActive=x.dataset.mode===activeMode;
+  x.classList.toggle('active',isActive);
+  x.setAttribute('aria-pressed',String(isActive));
+});
 
 fetch('/api/data').then(r=>r.json()).then(d=>{
   (d.items||[]).forEach(it=>{(DATA[it.mode]||DATA.Tools).push(it);});
@@ -152,4 +169,3 @@ fetch('/api/data').then(r=>r.json()).then(d=>{
 }).catch(e=>{root.innerHTML='<div class="loading">Could not load data. Check the AIRTABLE_TOKEN setting in Vercel.<br><small>'+e+'</small></div>';});
 </script>
 </body></html>
-
