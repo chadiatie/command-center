@@ -19,7 +19,6 @@
       --muted: #93a0b7;
       --quiet: #63728d;
       --violet: #7662ff;
-      --violet-2: #5b48d4;
       --cyan: #22d4f2;
       --green: #2bd9a3;
       --amber: #ffc62e;
@@ -28,6 +27,7 @@
     }
 
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     body {
       margin: 0;
@@ -40,8 +40,11 @@
     }
 
     button,
-    input { font: inherit; }
+    input,
+    select,
+    textarea { font: inherit; }
 
+    button { color: inherit; }
     a { color: inherit; }
 
     .sr-only {
@@ -62,13 +65,15 @@
       padding: 22px 0 72px;
     }
 
-    .appbar {
+    .appbar,
+    .nav-cluster {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 22px;
-      padding: 0 0 30px;
+      gap: 16px;
     }
+
+    .appbar { padding: 0 0 30px; }
 
     .brand {
       display: inline-flex;
@@ -119,6 +124,95 @@
     .mainnav a:hover { color: #fff; background: #142039; }
     .mainnav a.active { color: #fff; background: linear-gradient(135deg, #765cff, #527fff); }
 
+    .logout-button,
+    .icon-button {
+      border: 1px solid var(--border);
+      background: #0d1627;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .logout-button {
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 11px;
+      white-space: nowrap;
+    }
+
+    .logout-button:hover,
+    .icon-button:hover { color: #fff; border-color: #405174; }
+
+    .login-gate {
+      width: min(470px, 100%);
+      margin: 7vh auto 0;
+      padding: 34px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(15, 25, 44, 0.99), rgba(10, 18, 33, 0.99));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+    }
+
+    .login-icon {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 24px;
+      place-items: center;
+      border: 1px solid #3c4b81;
+      border-radius: 15px;
+      background: #162345;
+      font-size: 24px;
+    }
+
+    .login-gate h1 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .login-copy {
+      margin: 10px 0 24px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .login-form { display: grid; gap: 12px; }
+
+    .field-label {
+      display: grid;
+      gap: 8px;
+      color: #aab5c8;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      background: #091224;
+      color: #eef1f8;
+      transition: 150ms ease;
+    }
+
+    input,
+    select { min-height: 48px; padding: 0 14px; }
+    textarea { min-height: 98px; padding: 12px 14px; resize: vertical; }
+    input:focus,
+    select:focus,
+    textarea:focus { border-color: #6f68e8; box-shadow: 0 0 0 3px rgba(118, 98, 255, 0.14); }
+
+    .form-error {
+      min-height: 20px;
+      margin: 0;
+      color: var(--danger);
+      font-size: 13px;
+    }
+
     .hero {
       display: flex;
       align-items: flex-end;
@@ -152,27 +246,42 @@
     .sync-line.ready { color: #8495b5; }
     .sync-line.error { color: var(--danger); }
 
-    .primary-action {
+    .primary-action,
+    .secondary-action {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .primary-action {
       min-height: 52px;
       padding: 0 24px;
       border-radius: 14px;
       background: linear-gradient(135deg, #7860ff, #5282ff);
       box-shadow: 0 12px 32px rgba(91, 85, 255, 0.3);
       color: #fff;
-      text-decoration: none;
       font-size: 16px;
-      font-weight: 800;
-      transition: transform 160ms ease, box-shadow 160ms ease;
       white-space: nowrap;
     }
 
-    .primary-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 36px rgba(91, 85, 255, 0.38);
+    .primary-action:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(91, 85, 255, 0.38); }
+    .primary-action:disabled,
+    .secondary-action:disabled { cursor: wait; opacity: 0.65; transform: none; }
+
+    .secondary-action {
+      min-height: 44px;
+      padding: 0 18px;
+      border: 1px solid #314468;
+      border-radius: 11px;
+      background: #17243e;
+      color: #c5cee0;
     }
+
+    .secondary-action:hover { color: #fff; border-color: #4b6392; }
 
     .summary-grid {
       display: grid;
@@ -237,16 +346,9 @@
       letter-spacing: -0.02em;
     }
 
-    .panel-note {
-      color: #4f5f78;
-      font-size: 14px;
-      font-weight: 500;
-    }
+    .panel-note { color: #4f5f78; font-size: 14px; font-weight: 500; }
 
-    .chart {
-      display: grid;
-      gap: 15px;
-    }
+    .chart { display: grid; gap: 15px; }
 
     .chart-row {
       display: grid;
@@ -264,13 +366,7 @@
       white-space: nowrap;
     }
 
-    .bar-track {
-      height: 31px;
-      overflow: hidden;
-      border-radius: 10px;
-      background: #0a1221;
-    }
-
+    .bar-track { height: 31px; overflow: hidden; border-radius: 10px; background: #0a1221; }
     .bar-fill {
       width: 0;
       height: 100%;
@@ -279,19 +375,8 @@
       transition: width 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .chart-value {
-      color: #e1e6f0;
-      font-size: 14px;
-      font-weight: 800;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .chart-value { color: #e1e6f0; font-size: 14px; font-weight: 800; text-align: right; white-space: nowrap; }
+    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .filter-button {
       min-height: 40px;
@@ -308,15 +393,9 @@
 
     .filter-button:hover { color: #fff; border-color: #405174; }
     .filter-button.active { color: #fff; border-color: var(--violet); background: var(--violet); }
-
     .table-wrap { overflow-x: auto; }
 
-    table {
-      width: calc(100% - 1px);
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
+    table { width: calc(100% - 1px); border-collapse: collapse; table-layout: fixed; }
     th {
       padding: 0 14px 14px;
       border-bottom: 1px solid var(--border);
@@ -338,11 +417,7 @@
 
     tbody tr:last-child td { border-bottom: 0; }
     tbody tr:hover { background: rgba(31, 44, 70, 0.26); }
-
-    .name-cell {
-      color: #e7ebf3;
-      font-weight: 750;
-    }
+    .name-cell { color: #e7ebf3; font-weight: 750; }
 
     .category-pill {
       display: inline-flex;
@@ -357,27 +432,9 @@
       white-space: nowrap;
     }
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--status-color);
-      white-space: nowrap;
-    }
-
-    .status::before {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      content: "";
-    }
-
-    .money {
-      color: #dfe5f1;
-      font-weight: 750;
-      white-space: nowrap;
-    }
+    .status { display: inline-flex; align-items: center; gap: 7px; color: var(--status-color); white-space: nowrap; }
+    .status::before { width: 8px; height: 8px; border-radius: 50%; background: currentColor; content: ""; }
+    .money { color: #dfe5f1; font-weight: 750; white-space: nowrap; }
 
     .edit-link {
       display: inline-grid;
@@ -386,85 +443,117 @@
       place-items: center;
       border: 1px solid transparent;
       border-radius: 9px;
+      background: transparent;
       color: #ff9662;
-      text-decoration: none;
+      cursor: pointer;
       transition: 150ms ease;
     }
 
     .edit-link:hover { border-color: #5e3b3a; background: #241b25; }
+    .wishlist-intro { margin: 8px 0 6px; color: #75849e; font-size: 14px; }
+    .local-note { margin: 0; color: #52617c; font-size: 12px; }
 
-    .wishlist-intro {
-      margin: 8px 0 20px;
-      color: #75849e;
-      font-size: 14px;
+    .wishlist-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
-    .wishlist-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      min-height: 44px;
-    }
-
+    .wishlist-list { display: flex; flex-wrap: wrap; gap: 10px; min-height: 44px; }
     .wishlist-pill {
       display: inline-flex;
       align-items: center;
       gap: 9px;
       min-height: 42px;
-      padding: 0 16px;
+      padding: 0 10px 0 16px;
       border: 1px solid #2d4677;
       border-radius: 999px;
       background: #12203b;
       color: #9fb1ff;
-      text-decoration: none;
       font-size: 14px;
       font-weight: 750;
     }
 
-    .wishlist-pill span { color: #596b8e; }
-
-    .secondary-action {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 40px;
-      padding: 0 16px;
-      border: 1px solid #314468;
-      border-radius: 11px;
-      background: #17243e;
-      color: #c5cee0;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 750;
+    .wishlist-remove {
+      display: grid;
+      width: 25px;
+      height: 25px;
+      padding: 0;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #596b8e;
+      cursor: pointer;
+      font-size: 19px;
+      line-height: 1;
     }
 
-    .secondary-action:hover { color: #fff; border-color: #4b6392; }
-
+    .wishlist-remove:hover { background: #1c2d4f; color: #d6dded; }
     .empty-state,
     .loading-state,
-    .error-state {
-      padding: 22px 0;
-      color: #71809a;
-      font-size: 14px;
+    .error-state { padding: 22px 0; color: #71809a; font-size: 14px; }
+    .error-state { color: #ff879a; }
+
+    dialog {
+      width: min(680px, calc(100% - 28px));
+      max-height: calc(100vh - 36px);
+      padding: 0;
+      overflow: auto;
+      border: 1px solid #2b3d61;
+      border-radius: 20px;
+      background: #0c1628;
+      color: var(--text);
+      box-shadow: 0 28px 100px rgba(0, 0, 0, 0.56);
     }
 
-    .error-state { color: #ff879a; }
+    dialog::backdrop { background: rgba(3, 7, 15, 0.78); backdrop-filter: blur(5px); }
+    .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 24px 26px 0; }
+    .dialog-header h2 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
+    .icon-button { width: 38px; height: 38px; border-radius: 10px; font-size: 21px; }
+    .subscription-form { padding: 24px 26px 26px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .field-wide { grid-column: 1 / -1; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 20;
+      max-width: min(380px, calc(100% - 44px));
+      padding: 13px 16px;
+      border: 1px solid #295e52;
+      border-radius: 12px;
+      background: #102c29;
+      color: #a8f3dd;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.34);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toast.error { border-color: #754052; background: #321923; color: #ffb0bd; }
 
     @media (max-width: 900px) {
       .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .chart-row { grid-template-columns: 110px minmax(100px, 1fr) 82px; }
       .panel { padding: 24px; }
+      .appbar { align-items: flex-start; }
+      .nav-cluster { align-items: flex-end; flex-direction: column; }
     }
 
     @media (max-width: 680px) {
       .shell { width: min(100% - 24px, 1180px); padding-top: 14px; }
-      .appbar { align-items: flex-start; flex-direction: column; padding-bottom: 34px; }
+      .appbar { align-items: stretch; flex-direction: column; padding-bottom: 34px; }
+      .nav-cluster { align-items: stretch; gap: 10px; }
       .mainnav { width: 100%; overflow-x: auto; }
       .mainnav a { flex: 1 0 auto; padding-inline: 13px; }
+      .logout-button { align-self: flex-end; }
+      .login-gate { margin-top: 2vh; padding: 26px 22px; }
       .hero { align-items: stretch; flex-direction: column; }
       .primary-action { align-self: flex-start; }
-      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .summary-grid { gap: 12px; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
       .metric { min-height: 112px; padding: 19px; }
       .metric-label { margin-bottom: 15px; }
       .panel { padding: 20px 16px; }
@@ -472,24 +561,15 @@
       .chart-row { grid-template-columns: 80px minmax(80px, 1fr) 70px; gap: 10px; }
       .chart-label, .chart-value { font-size: 12px; }
       .bar-track { height: 26px; }
+      .wishlist-form { grid-template-columns: 1fr; }
+      .wishlist-form .secondary-action { justify-self: stretch; }
 
       .table-wrap { overflow: visible; }
       table, tbody, tr, td { display: block; width: 100%; }
       thead { display: none; }
       tbody { display: grid; gap: 12px; }
-      tbody tr {
-        padding: 14px 15px;
-        border: 1px solid var(--border-soft);
-        border-radius: 14px;
-        background: var(--panel-deep);
-      }
-      td {
-        display: grid;
-        grid-template-columns: 90px minmax(0, 1fr);
-        gap: 12px;
-        padding: 6px 0;
-        border: 0;
-      }
+      tbody tr { padding: 14px 15px; border: 1px solid var(--border-soft); border-radius: 14px; background: var(--panel-deep); }
+      td { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 12px; padding: 6px 0; border: 0; }
       td::before {
         color: #65748e;
         content: attr(data-label);
@@ -500,6 +580,10 @@
       }
       td.edit-cell { display: flex; justify-content: flex-end; padding-top: 10px; }
       td.edit-cell::before { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field-wide { grid-column: auto; }
+      .subscription-form { padding: 20px; }
+      .dialog-header { padding: 20px 20px 0; }
     }
 
     @media (max-width: 430px) {
@@ -520,118 +604,150 @@
         <span class="brand-mark" aria-hidden="true">🚀</span>
         <span>My Command Center</span>
       </a>
-      <nav class="mainnav" aria-label="Command Center sections">
-        <a href="/?mode=Tools">🧰 Tools</a>
-        <a href="/?mode=Sources">📰 Sources</a>
-        <a class="active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
-      </nav>
+      <div class="nav-cluster">
+        <nav class="mainnav" aria-label="Command Center sections">
+          <a href="/?mode=Tools">🧰 Tools</a>
+          <a href="/?mode=Sources">📰 Sources</a>
+          <a class="active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
+        </nav>
+        <button class="logout-button" id="logoutButton" type="button" hidden>Sign out</button>
+      </div>
     </header>
 
-    <section class="hero">
-      <div>
-        <p class="eyebrow">PERSONAL FINANCE</p>
-        <h1>Subscriptions</h1>
-        <p class="sync-line" id="syncState" role="status">Syncing with Airtable…</p>
-      </div>
-      <a class="primary-action" href="https://airtable.com/appVb7YfkeSMmmTeR/tbl4H5Yhkow25EAio" target="_blank" rel="noopener">+ Add Subscription</a>
+    <section class="login-gate" id="loginGate" aria-labelledby="loginTitle">
+      <div class="login-icon" aria-hidden="true">🔐</div>
+      <h1 id="loginTitle">Private dashboard</h1>
+      <p class="login-copy">Sign in to view and manage your subscriptions.</p>
+      <form class="login-form" id="loginForm">
+        <label class="field-label" for="passwordInput">
+          Password
+          <input id="passwordInput" name="password" type="password" maxlength="256" autocomplete="current-password" required>
+        </label>
+        <p class="form-error" id="loginError" role="alert"></p>
+        <button class="primary-action" id="loginButton" type="submit">Sign in</button>
+      </form>
     </section>
 
-    <section class="summary-grid" aria-label="Subscription summary">
-      <article class="metric">
-        <span class="metric-label">Yearly spend</span>
-        <strong class="metric-value" id="yearlySpend">—</strong>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Monthly spend</span>
-        <strong class="metric-value" id="monthlySpend">—</strong>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Active subs</span>
-        <strong class="metric-value" id="activeCount">—</strong>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Free benefits</span>
-        <strong class="metric-value" id="freeCount">—</strong>
-      </article>
-    </section>
-
-    <section class="panel" aria-labelledby="chartTitle">
-      <div class="panel-heading">
-        <h2 class="panel-title" id="chartTitle">Spend by Category <span class="panel-note">(yearly, active only)</span></h2>
-      </div>
-      <div class="chart" id="categoryChart">
-        <div class="loading-state">Calculating category spend…</div>
-      </div>
-    </section>
-
-    <section class="panel" aria-labelledby="tableTitle">
-      <div class="panel-heading">
-        <h2 class="panel-title" id="tableTitle">All Subscriptions</h2>
-        <div class="filter-tabs" aria-label="Filter subscriptions">
-          <button class="filter-button active" type="button" data-filter="All">All</button>
-          <button class="filter-button" type="button" data-filter="Active">Active</button>
-          <button class="filter-button" type="button" data-filter="Paused">Paused</button>
-          <button class="filter-button" type="button" data-filter="Cancelled">Cancelled</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 22%">Subscription</th>
-              <th style="width: 17%">Category</th>
-              <th style="width: 14%">Status</th>
-              <th style="width: 11%">Yearly</th>
-              <th style="width: 11%">Monthly</th>
-              <th style="width: 19%">Paid via</th>
-              <th style="width: 6%"><span class="sr-only">Edit</span></th>
-            </tr>
-          </thead>
-          <tbody id="subscriptionRows">
-            <tr><td colspan="7"><div class="loading-state">Loading subscriptions…</div></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="panel" aria-labelledby="wishlistTitle">
-      <div class="panel-heading">
+    <div id="dashboard" hidden>
+      <section class="hero">
         <div>
-          <h2 class="panel-title" id="wishlistTitle">💡 Subs I'd Like to Try</h2>
-          <p class="wishlist-intro">Park ideas here before committing.</p>
+          <p class="eyebrow">PERSONAL FINANCE</p>
+          <h1>Subscriptions</h1>
+          <p class="sync-line" id="syncState" role="status">Syncing with Airtable…</p>
         </div>
-        <a class="secondary-action" href="https://airtable.com/appVb7YfkeSMmmTeR/tblCqK6M6PbCdDZl6" target="_blank" rel="noopener">Manage Wishlist</a>
-      </div>
-      <div class="wishlist-list" id="wishlistList">
-        <div class="loading-state">Loading wishlist…</div>
-      </div>
-    </section>
+        <button class="primary-action" id="addSubscriptionButton" type="button">+ Add Subscription</button>
+      </section>
+
+      <section class="summary-grid" aria-label="Subscription summary">
+        <article class="metric"><span class="metric-label">Yearly spend</span><strong class="metric-value" id="yearlySpend">—</strong></article>
+        <article class="metric"><span class="metric-label">Monthly spend</span><strong class="metric-value" id="monthlySpend">—</strong></article>
+        <article class="metric"><span class="metric-label">Active subs</span><strong class="metric-value" id="activeCount">—</strong></article>
+        <article class="metric"><span class="metric-label">Free benefits</span><strong class="metric-value" id="freeCount">—</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="chartTitle">
+        <div class="panel-heading">
+          <h2 class="panel-title" id="chartTitle">Spend by Category <span class="panel-note">(yearly, active only)</span></h2>
+        </div>
+        <div class="chart" id="categoryChart"><div class="loading-state">Calculating category spend…</div></div>
+      </section>
+
+      <section class="panel" aria-labelledby="tableTitle">
+        <div class="panel-heading">
+          <h2 class="panel-title" id="tableTitle">All Subscriptions</h2>
+          <div class="filter-tabs" aria-label="Filter subscriptions">
+            <button class="filter-button active" type="button" data-filter="All">All</button>
+            <button class="filter-button" type="button" data-filter="Active">Active</button>
+            <button class="filter-button" type="button" data-filter="Paused">Paused</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 22%">Subscription</th>
+                <th style="width: 17%">Category</th>
+                <th style="width: 14%">Status</th>
+                <th style="width: 11%">Yearly</th>
+                <th style="width: 11%">Monthly</th>
+                <th style="width: 19%">Paid via</th>
+                <th style="width: 6%"><span class="sr-only">Edit</span></th>
+              </tr>
+            </thead>
+            <tbody id="subscriptionRows"><tr><td colspan="7"><div class="loading-state">Loading subscriptions…</div></td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="wishlistTitle">
+        <div class="panel-heading">
+          <div>
+            <h2 class="panel-title" id="wishlistTitle">💡 Subs I'd Like to Try</h2>
+            <p class="wishlist-intro">Park ideas here before committing.</p>
+            <p class="local-note">Saved only in this browser — completely separate from Airtable.</p>
+          </div>
+        </div>
+        <form class="wishlist-form" id="wishlistForm">
+          <label class="sr-only" for="wishlistInput">Subscription name</label>
+          <input id="wishlistInput" type="text" maxlength="120" placeholder="e.g. Midjourney, Notion, Disney+…" autocomplete="off" required>
+          <button class="secondary-action" type="submit">Add</button>
+        </form>
+        <div class="wishlist-list" id="wishlistList"></div>
+      </section>
+    </div>
   </main>
 
+  <dialog id="subscriptionDialog" aria-labelledby="dialogTitle">
+    <div class="dialog-header">
+      <h2 id="dialogTitle">Add subscription</h2>
+      <button class="icon-button" id="closeDialogButton" type="button" aria-label="Close">×</button>
+    </div>
+    <form class="subscription-form" id="subscriptionForm">
+      <input id="subscriptionId" name="id" type="hidden">
+      <div class="form-grid">
+        <label class="field-label field-wide">Name<input name="name" maxlength="120" required autocomplete="off"></label>
+        <label class="field-label">Category
+          <select name="category" required>
+            <option>AI</option><option>Productivity</option><option>Health</option><option>Entertainment</option>
+            <option>Music</option><option>Family</option><option>Cloud</option><option>Photography</option>
+            <option>Transport</option><option>Other</option>
+          </select>
+        </label>
+        <label class="field-label">Status<select name="status" required><option>Active</option><option>Paused</option></select></label>
+        <label class="field-label">Billing cycle<select name="cycle" required><option>Yearly</option><option>Monthly</option></select></label>
+        <label class="field-label">Paid via<input name="paidVia" maxlength="120" placeholder="e.g. Revolut"></label>
+        <label class="field-label">Monthly cost (CHF)<input name="monthly" type="number" min="0" max="100000" step="0.01" value="0" inputmode="decimal"></label>
+        <label class="field-label">Yearly cost (CHF)<input name="yearly" type="number" min="0" max="100000" step="0.01" value="0" inputmode="decimal"></label>
+        <label class="field-label field-wide">Notes<textarea name="notes" maxlength="2000" placeholder="Optional notes"></textarea></label>
+      </div>
+      <p class="form-error" id="subscriptionFormError" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="secondary-action" id="cancelDialogButton" type="button">Cancel</button>
+        <button class="primary-action" id="saveSubscriptionButton" type="submit">Save subscription</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
   <script>
-    const SUBSCRIPTIONS_AIRTABLE_URL = "https://airtable.com/appVb7YfkeSMmmTeR/tbl4H5Yhkow25EAio";
-    const WISHLIST_AIRTABLE_URL = "https://airtable.com/appVb7YfkeSMmmTeR/tblCqK6M6PbCdDZl6";
-
+    const WISHLIST_KEY = "commandCenterSubscriptionWishlistV1";
     const categoryColors = {
-      AI: ["#4a3d8e", "#7662ff", "#8f7aff"],
-      Productivity: ["#176278", "#22d4f2", "#3fe1ef"],
-      Entertainment: ["#783754", "#e45e9e", "#f178b1"],
-      Cloud: ["#25548b", "#5ca4ff", "#77b8ff"],
-      Music: ["#743b4f", "#ff627c", "#ff7c91"],
-      Family: ["#735d14", "#ffc62e", "#ffd85e"],
-      Health: ["#176a57", "#2bd9a3", "#54e6ba"],
-      Photography: ["#3b4c8d", "#7e9dff", "#9db5ff"],
-      Transport: ["#195d72", "#35c9e8", "#65d9ef"],
-      Other: ["#465267", "#8b98ae", "#aab4c5"],
+      AI: ["#4a3d8e", "#7662ff", "#8f7aff"], Productivity: ["#176278", "#22d4f2", "#3fe1ef"],
+      Entertainment: ["#783754", "#e45e9e", "#f178b1"], Cloud: ["#25548b", "#5ca4ff", "#77b8ff"],
+      Music: ["#743b4f", "#ff627c", "#ff7c91"], Family: ["#735d14", "#ffc62e", "#ffd85e"],
+      Health: ["#176a57", "#2bd9a3", "#54e6ba"], Photography: ["#3b4c8d", "#7e9dff", "#9db5ff"],
+      Transport: ["#195d72", "#35c9e8", "#65d9ef"], Other: ["#465267", "#8b98ae", "#aab4c5"],
     };
+    const statusColors = { Active: "#2bd9a3", Paused: "#ffc62e" };
 
-    const statusColors = {
-      Active: "#2bd9a3",
-      Paused: "#ffc62e",
-      Cancelled: "#ff6983",
-      Wishlist: "#6c8cff",
-    };
-
+    const dashboard = document.getElementById("dashboard");
+    const loginGate = document.getElementById("loginGate");
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const loginError = document.getElementById("loginError");
+    const passwordInput = document.getElementById("passwordInput");
+    const logoutButton = document.getElementById("logoutButton");
     const yearlySpend = document.getElementById("yearlySpend");
     const monthlySpend = document.getElementById("monthlySpend");
     const activeCount = document.getElementById("activeCount");
@@ -639,30 +755,51 @@
     const syncState = document.getElementById("syncState");
     const categoryChart = document.getElementById("categoryChart");
     const subscriptionRows = document.getElementById("subscriptionRows");
-    const wishlistList = document.getElementById("wishlistList");
     const filterButtons = [...document.querySelectorAll(".filter-button")];
+    const dialog = document.getElementById("subscriptionDialog");
+    const dialogTitle = document.getElementById("dialogTitle");
+    const subscriptionForm = document.getElementById("subscriptionForm");
+    const subscriptionFormError = document.getElementById("subscriptionFormError");
+    const saveSubscriptionButton = document.getElementById("saveSubscriptionButton");
+    const wishlistForm = document.getElementById("wishlistForm");
+    const wishlistInput = document.getElementById("wishlistInput");
+    const wishlistList = document.getElementById("wishlistList");
+    const toast = document.getElementById("toast");
 
     let subscriptions = [];
     let activeFilter = "All";
+    let wishlist = [];
+    let toastTimer;
+
+    async function apiRequest(url, options = {}) {
+      const response = await fetch(url, {
+        ...options,
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      });
+      let data = {};
+      try { data = await response.json(); } catch { data = {}; }
+      if (!response.ok) {
+        const error = new Error(data.error || `Request failed (${response.status})`);
+        error.status = response.status;
+        throw error;
+      }
+      return data;
+    }
 
     function formatCHF(value) {
       const rounded = Math.round(Number(value) || 0);
       return `CHF ${rounded.toLocaleString("de-CH")}`;
     }
 
-    function categoryStyle(category) {
-      const colors = categoryColors[category] || categoryColors.Other;
-      return { start: colors[0], end: colors[1], text: colors[2] };
-    }
+    function categoryStyle(category) { const colors = categoryColors[category] || categoryColors.Other; return { start: colors[0], end: colors[1], text: colors[2] }; }
 
     function sortSubscriptions(items) {
-      const statusRank = { Active: 0, Paused: 1, Cancelled: 2, Wishlist: 3 };
+      const statusRank = { Active: 0, Paused: 1 };
       return [...items].sort((a, b) => {
         const byStatus = (statusRank[a.status] ?? 9) - (statusRank[b.status] ?? 9);
         if (byStatus) return byStatus;
         const byYearly = (a.yearly || 0) - (b.yearly || 0);
-        if (byYearly) return byYearly;
-        return a.name.localeCompare(b.name);
+        return byYearly || a.name.localeCompare(b.name);
       });
     }
 
@@ -670,192 +807,181 @@
       const active = subscriptions.filter((item) => item.status === "Active");
       const yearly = active.reduce((sum, item) => sum + (item.yearly || 0), 0);
       const monthly = active.reduce((sum, item) => sum + (item.monthly || 0), 0);
-      const free = active.filter((item) => !item.yearly && !item.monthly).length;
-
       yearlySpend.textContent = formatCHF(yearly);
       monthlySpend.textContent = formatCHF(monthly);
       activeCount.textContent = active.length.toLocaleString("de-CH");
-      freeCount.textContent = free.toLocaleString("de-CH");
+      freeCount.textContent = active.filter((item) => !item.yearly && !item.monthly).length.toLocaleString("de-CH");
     }
 
     function renderChart() {
       const totals = new Map();
-      subscriptions
-        .filter((item) => item.status === "Active")
-        .forEach((item) => totals.set(item.category, (totals.get(item.category) || 0) + (item.yearly || 0)));
-
-      const rows = [...totals.entries()]
-        .filter(([, value]) => value > 0)
-        .sort((a, b) => b[1] - a[1]);
-
+      subscriptions.filter((item) => item.status === "Active").forEach((item) => totals.set(item.category, (totals.get(item.category) || 0) + (item.yearly || 0)));
+      const rows = [...totals.entries()].filter(([, value]) => value > 0).sort((a, b) => b[1] - a[1]);
       categoryChart.replaceChildren();
       if (!rows.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = "No active paid subscriptions yet.";
-        categoryChart.appendChild(empty);
-        return;
+        const empty = document.createElement("div"); empty.className = "empty-state"; empty.textContent = "No active paid subscriptions yet."; categoryChart.appendChild(empty); return;
       }
-
       const max = Math.max(...rows.map(([, value]) => value));
       rows.forEach(([category, value]) => {
         const colors = categoryStyle(category);
-        const row = document.createElement("div");
-        row.className = "chart-row";
-
-        const label = document.createElement("div");
-        label.className = "chart-label";
-        label.textContent = category;
-        label.title = category;
-
-        const track = document.createElement("div");
-        track.className = "bar-track";
-        const fill = document.createElement("div");
-        fill.className = "bar-fill";
-        fill.style.setProperty("--bar-start", colors.start);
-        fill.style.setProperty("--bar-end", colors.end);
-        track.appendChild(fill);
-
-        const amount = document.createElement("div");
-        amount.className = "chart-value";
-        amount.textContent = formatCHF(value);
-
-        row.append(label, track, amount);
-        categoryChart.appendChild(row);
+        const row = document.createElement("div"); row.className = "chart-row";
+        const label = document.createElement("div"); label.className = "chart-label"; label.textContent = category; label.title = category;
+        const track = document.createElement("div"); track.className = "bar-track";
+        const fill = document.createElement("div"); fill.className = "bar-fill"; fill.style.setProperty("--bar-start", colors.start); fill.style.setProperty("--bar-end", colors.end); track.appendChild(fill);
+        const amount = document.createElement("div"); amount.className = "chart-value"; amount.textContent = formatCHF(value);
+        row.append(label, track, amount); categoryChart.appendChild(row);
         requestAnimationFrame(() => { fill.style.width = `${Math.max(4, (value / max) * 100)}%`; });
       });
     }
 
     function cell(label, className, content) {
-      const td = document.createElement("td");
-      td.dataset.label = label;
-      if (className) td.className = className;
-      if (content instanceof Node) td.appendChild(content);
-      else td.textContent = content;
-      return td;
+      const td = document.createElement("td"); td.dataset.label = label; if (className) td.className = className;
+      if (content instanceof Node) td.appendChild(content); else td.textContent = content; return td;
     }
 
     function renderTable() {
-      const visible = sortSubscriptions(
-        activeFilter === "All" ? subscriptions : subscriptions.filter((item) => item.status === activeFilter)
-      );
-
+      const visible = sortSubscriptions(activeFilter === "All" ? subscriptions : subscriptions.filter((item) => item.status === activeFilter));
       subscriptionRows.replaceChildren();
       if (!visible.length) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 7;
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = `No ${activeFilter.toLowerCase()} subscriptions.`;
-        td.appendChild(empty);
-        tr.appendChild(td);
-        subscriptionRows.appendChild(tr);
-        return;
+        const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7;
+        const empty = document.createElement("div"); empty.className = "empty-state"; empty.textContent = `No ${activeFilter.toLowerCase()} subscriptions.`;
+        td.appendChild(empty); tr.appendChild(td); subscriptionRows.appendChild(tr); return;
       }
-
       visible.forEach((item) => {
-        const colors = categoryStyle(item.category);
-        const tr = document.createElement("tr");
-
-        const category = document.createElement("span");
-        category.className = "category-pill";
-        category.style.setProperty("--category-color", colors.text);
-        category.textContent = item.category;
-
-        const status = document.createElement("span");
-        status.className = "status";
-        status.style.setProperty("--status-color", statusColors[item.status] || statusColors.Active);
-        status.textContent = item.status;
-
-        const edit = document.createElement("a");
-        edit.className = "edit-link";
-        edit.href = SUBSCRIPTIONS_AIRTABLE_URL;
-        edit.target = "_blank";
-        edit.rel = "noopener";
-        edit.title = `Edit ${item.name} in Airtable`;
-        edit.setAttribute("aria-label", edit.title);
-        edit.textContent = "✎";
-
-        tr.append(
-          cell("Subscription", "name-cell", item.name),
-          cell("Category", "", category),
-          cell("Status", "", status),
-          cell("Yearly", "money", formatCHF(item.yearly)),
-          cell("Monthly", "", formatCHF(item.monthly)),
-          cell("Paid via", "", item.paidVia || "—"),
-          cell("", "edit-cell", edit)
-        );
+        const colors = categoryStyle(item.category); const tr = document.createElement("tr");
+        const category = document.createElement("span"); category.className = "category-pill"; category.style.setProperty("--category-color", colors.text); category.textContent = item.category;
+        const status = document.createElement("span"); status.className = "status"; status.style.setProperty("--status-color", statusColors[item.status] || statusColors.Paused); status.textContent = item.status;
+        const edit = document.createElement("button"); edit.className = "edit-link"; edit.type = "button"; edit.title = `Edit ${item.name}`; edit.setAttribute("aria-label", edit.title); edit.textContent = "✎"; edit.addEventListener("click", () => openSubscriptionDialog(item));
+        tr.append(cell("Subscription", "name-cell", item.name), cell("Category", "", category), cell("Status", "", status), cell("Yearly", "money", formatCHF(item.yearly)), cell("Monthly", "", formatCHF(item.monthly)), cell("Paid via", "", item.paidVia || "—"), cell("", "edit-cell", edit));
         subscriptionRows.appendChild(tr);
       });
     }
 
-    function renderWishlist(items) {
-      wishlistList.replaceChildren();
-      if (!items.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = "Nothing parked yet — add an idea in Airtable when you want to try something new.";
-        wishlistList.appendChild(empty);
-        return;
-      }
-
-      items.forEach((item) => {
-        const link = document.createElement("a");
-        link.className = "wishlist-pill";
-        link.href = WISHLIST_AIRTABLE_URL;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.title = item.notes || `Open ${item.name} in Airtable`;
-        link.append(document.createTextNode(item.name));
-        const arrow = document.createElement("span");
-        arrow.setAttribute("aria-hidden", "true");
-        arrow.textContent = "↗";
-        link.appendChild(arrow);
-        wishlistList.appendChild(link);
-      });
-    }
+    function renderAll() { renderMetrics(); renderChart(); renderTable(); }
 
     function showLoadError(message) {
-      syncState.className = "sync-line error";
-      syncState.textContent = "Airtable connection needs attention";
+      syncState.className = "sync-line error"; syncState.textContent = "Airtable connection needs attention";
       yearlySpend.textContent = monthlySpend.textContent = activeCount.textContent = freeCount.textContent = "—";
-      categoryChart.innerHTML = `<div class="error-state">${message}</div>`;
-      subscriptionRows.innerHTML = `<tr><td colspan="7"><div class="error-state">${message}</div></td></tr>`;
-      wishlistList.innerHTML = `<div class="error-state">${message}</div>`;
+      categoryChart.replaceChildren(); const chartError = document.createElement("div"); chartError.className = "error-state"; chartError.textContent = message; categoryChart.appendChild(chartError);
+      subscriptionRows.replaceChildren(); const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7; const tableError = document.createElement("div"); tableError.className = "error-state"; tableError.textContent = message; td.appendChild(tableError); tr.appendChild(td); subscriptionRows.appendChild(tr);
     }
 
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        activeFilter = button.dataset.filter;
-        filterButtons.forEach((item) => item.classList.toggle("active", item === button));
-        renderTable();
-      });
-    });
+    function showToast(message, isError = false) {
+      clearTimeout(toastTimer); toast.textContent = message; toast.classList.toggle("error", isError); toast.hidden = false;
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 3600);
+    }
 
-    fetch("/api/subscriptions")
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
-        return data;
-      })
-      .then((data) => {
+    function showLogin(message = "", isError = false) {
+      dashboard.hidden = true; loginGate.hidden = false; logoutButton.hidden = true;
+      loginError.textContent = message; loginError.style.color = isError ? "var(--danger)" : "var(--muted)";
+      if (message) passwordInput.focus();
+    }
+
+    async function loadSubscriptions() {
+      try {
+        const data = await apiRequest("/api/subscriptions");
         subscriptions = Array.isArray(data.subscriptions) ? data.subscriptions : [];
-        renderMetrics();
-        renderChart();
-        renderTable();
-        renderWishlist(Array.isArray(data.wishlist) ? data.wishlist : []);
-
+        loginGate.hidden = true; dashboard.hidden = false; logoutButton.hidden = false;
+        renderAll();
         const duplicates = Number(data.meta?.duplicateSubscriptionCount || 0);
         syncState.className = "sync-line ready";
-        syncState.textContent = `Live from Airtable · ${subscriptions.length} subscriptions · updates automatically`;
-        syncState.title = duplicates ? `${duplicates} duplicate Airtable rows are safely ignored in these totals.` : "Airtable is the live source of truth.";
-      })
-      .catch((error) => {
-        console.error(error);
-        showLoadError("Could not load subscriptions. Give the Vercel AIRTABLE_TOKEN read access to the Subscriptions Tracker base, then redeploy.");
+        syncState.textContent = `Live from Airtable · ${subscriptions.length} subscriptions`;
+        syncState.title = duplicates ? `${duplicates} older duplicate Airtable rows are safely ignored.` : "Airtable is the source of truth.";
+      } catch (error) {
+        if (error.status === 401) { showLogin(); return; }
+        if (error.status === 503) { showLogin(error.message, true); return; }
+        loginGate.hidden = true; dashboard.hidden = false; logoutButton.hidden = false;
+        showLoadError("Could not reach Airtable. Check the Vercel AIRTABLE_TOKEN permissions, then try again.");
+      }
+    }
+
+    function openSubscriptionDialog(item = null) {
+      subscriptionForm.reset(); subscriptionFormError.textContent = "";
+      dialogTitle.textContent = item ? "Edit subscription" : "Add subscription";
+      subscriptionForm.elements.id.value = item?.id || "";
+      subscriptionForm.elements.name.value = item?.name || "";
+      subscriptionForm.elements.category.value = item?.category || "AI";
+      subscriptionForm.elements.status.value = item?.status === "Paused" ? "Paused" : "Active";
+      subscriptionForm.elements.cycle.value = item?.cycle === "Monthly" ? "Monthly" : "Yearly";
+      subscriptionForm.elements.monthly.value = item?.monthly ?? 0;
+      subscriptionForm.elements.yearly.value = item?.yearly ?? 0;
+      subscriptionForm.elements.paidVia.value = item?.paidVia || "";
+      subscriptionForm.elements.notes.value = item?.notes || "";
+      dialog.showModal(); subscriptionForm.elements.name.focus();
+    }
+
+    function readWishlist() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(WISHLIST_KEY) || "[]");
+        return Array.isArray(stored) ? stored.filter((item) => typeof item === "string" && item.trim()).slice(0, 100) : [];
+      } catch { return []; }
+    }
+
+    function saveWishlist() {
+      try { localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist)); }
+      catch { showToast("This browser could not save the wishlist.", true); }
+    }
+
+    function renderWishlist() {
+      wishlistList.replaceChildren();
+      if (!wishlist.length) {
+        const empty = document.createElement("div"); empty.className = "empty-state"; empty.textContent = "Nothing parked yet — add a subscription name above."; wishlistList.appendChild(empty); return;
+      }
+      wishlist.forEach((name, index) => {
+        const pill = document.createElement("span"); pill.className = "wishlist-pill"; pill.append(document.createTextNode(name));
+        const remove = document.createElement("button"); remove.className = "wishlist-remove"; remove.type = "button"; remove.textContent = "×"; remove.title = `Remove ${name}`; remove.setAttribute("aria-label", remove.title);
+        remove.addEventListener("click", () => { wishlist.splice(index, 1); saveWishlist(); renderWishlist(); });
+        pill.appendChild(remove); wishlistList.appendChild(pill);
       });
+    }
+
+    filterButtons.forEach((button) => button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter; filterButtons.forEach((item) => item.classList.toggle("active", item === button)); renderTable();
+    }));
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault(); loginError.textContent = ""; loginButton.disabled = true; loginButton.textContent = "Signing in…";
+      try {
+        await apiRequest("/api/login", { method: "POST", body: JSON.stringify({ password: passwordInput.value }) });
+        passwordInput.value = ""; await loadSubscriptions();
+      } catch (error) { showLogin(error.message, true); }
+      finally { loginButton.disabled = false; loginButton.textContent = "Sign in"; }
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      try { await apiRequest("/api/logout", { method: "POST", body: "{}" }); } catch { /* cookie is also expired by a successful endpoint */ }
+      subscriptions = []; showLogin("You’re signed out.");
+    });
+
+    document.getElementById("addSubscriptionButton").addEventListener("click", () => openSubscriptionDialog());
+    document.getElementById("closeDialogButton").addEventListener("click", () => dialog.close());
+    document.getElementById("cancelDialogButton").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+
+    subscriptionForm.addEventListener("submit", async (event) => {
+      event.preventDefault(); subscriptionFormError.textContent = ""; saveSubscriptionButton.disabled = true; saveSubscriptionButton.textContent = "Saving…";
+      const values = new FormData(subscriptionForm);
+      const item = {
+        id: values.get("id"), name: values.get("name"), category: values.get("category"), status: values.get("status"), cycle: values.get("cycle"),
+        monthly: values.get("monthly"), yearly: values.get("yearly"), paidVia: values.get("paidVia"), notes: values.get("notes"),
+      };
+      const isEditing = Boolean(item.id);
+      try {
+        await apiRequest("/api/subscriptions", { method: isEditing ? "PATCH" : "POST", body: JSON.stringify(item) });
+        dialog.close(); await loadSubscriptions(); showToast(isEditing ? "Subscription updated in Airtable." : "Subscription added to Airtable.");
+      } catch (error) {
+        if (error.status === 401) { dialog.close(); showLogin("Your session expired. Sign in again.", true); }
+        else subscriptionFormError.textContent = error.message;
+      } finally { saveSubscriptionButton.disabled = false; saveSubscriptionButton.textContent = "Save subscription"; }
+    });
+
+    wishlistForm.addEventListener("submit", (event) => {
+      event.preventDefault(); const name = wishlistInput.value.trim(); if (!name) return;
+      if (wishlist.some((item) => item.toLocaleLowerCase("en") === name.toLocaleLowerCase("en"))) { showToast("That subscription is already in your try list.", true); return; }
+      wishlist.push(name); saveWishlist(); renderWishlist(); wishlistInput.value = ""; wishlistInput.focus();
+    });
+
+    wishlist = readWishlist(); renderWishlist(); loadSubscriptions();
   </script>
 </body>
 </html>
-
