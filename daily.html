@@ -184,7 +184,7 @@
 
         <article class="panel" aria-labelledby="inboxTitle">
           <header class="panel-head">
-            <div class="panel-title"><span class="panel-icon"><span class="material-symbols-rounded" aria-hidden="true">inbox</span></span><div><h2 id="inboxTitle">Inbox priorities</h2><p>Unread and high-importance messages</p></div></div>
+            <div class="panel-title"><span class="panel-icon"><span class="material-symbols-rounded" aria-hidden="true">inbox</span></span><div><h2 id="inboxTitle">Unread inbox</h2><p>Your latest unread messages</p></div></div>
             <span class="count" id="inboxCount"></span>
           </header>
           <div class="list" id="inboxList"><div class="skeleton"></div><div class="skeleton"></div></div>
@@ -228,7 +228,7 @@
       }
 
       function renderInbox(items) {
-        els.inboxCount.textContent = `${items.length} prioritised`;
+        els.inboxCount.textContent = `${items.length} unread`;
         if (!items.length) { els.inboxList.innerHTML = '<div class="empty">No unread priority messages.</div>'; return; }
         els.inboxList.innerHTML = items.map((item) => {
           const sample = item.isSample ? '<span class="sample-badge">SAMPLE</span>' : "";

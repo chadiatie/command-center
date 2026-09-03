@@ -3,6 +3,8 @@ import { requireAuth } from "./_auth.js";
 const TIME_ZONE = "Europe/Zurich";
 const OUTLOOK_TIME_ZONE = "W. Europe Standard Time";
 const GRAPH_SCOPE = "https://graph.microsoft.com/.default";
+const AIRTABLE_BASE_ID = "appCBSnJWqjz2xF6l";
+const AIRTABLE_TABLE_ID = "tblYigHKlN8xV4E3R";
 
 function hasGraphConfig() {
   return [
@@ -124,6 +126,70 @@ function samplePayload(reason = "Outlook is ready to connect") {
   };
 }
 
+function selectName(value, fallback = "") {
+  if (typeof value === "string") return value;
+  return value?.name || fallback;
+}
+
+async function airtablePayload(token) {
+  let records = [];
+  let offset;
+  do {
+    const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`);
+    url.searchParams.set("pageSize", "100");
+    if (offset) url.searchParams.set("offset", offset);
+    const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!response.ok) throw new Error(`Airtable daily brief returned ${response.status}`);
+    const page = await response.json();
+    records = records.concat(page.records || []);
+    offset = page.offset;
+  } while (offset);
+
+  const latestBatch = records.reduce((latest, record) => {
+    const syncedAt = String(record.fields?.["Synced At"] || "");
+    return syncedAt > latest ? syncedAt : latest;
+  }, "");
+  if (!latestBatch) return null;
+
+  const latest = records.filter((record) => record.fields?.["Synced At"] === latestBatch);
+  const calendar = latest
+    .filter((record) => selectName(record.fields?.Type) === "Calendar")
+    .map((record) => ({
+      id: record.fields.Key || record.id,
+      title: record.fields.Title || "Untitled event",
+      start: record.fields.Start || "",
+      end: record.fields.End || "",
+      location: record.fields.Meta || "Outlook calendar",
+      isAllDay: false,
+      url: record.fields.URL || "",
+      isSample: false,
+    }))
+    .sort((left, right) => new Date(left.start) - new Date(right.start));
+
+  const inbox = latest
+    .filter((record) => selectName(record.fields?.Type) === "Inbox")
+    .map((record) => ({
+      id: record.fields.Key || record.id,
+      subject: record.fields.Title || "No subject",
+      from: record.fields.Meta || "Unknown sender",
+      receivedAt: record.fields.Received || latestBatch,
+      importance: selectName(record.fields.Importance, "Normal").toLowerCase(),
+      isRead: selectName(record.fields?.["Read State"], "Unread") === "Read",
+      url: record.fields.URL || "",
+      isSample: false,
+    }))
+    .sort((left, right) => new Date(right.receivedAt) - new Date(left.receivedAt));
+
+  return {
+    mode: "live",
+    source: "Outlook via Airtable",
+    refreshedAt: latestBatch,
+    refreshIntervalMinutes: 5,
+    calendar,
+    inbox,
+  };
+}
+
 async function getAccessToken() {
   const body = new URLSearchParams({
     client_id: process.env.MS_GRAPH_CLIENT_ID,
@@ -221,8 +287,20 @@ export default async function handler(req, res) {
   }
   if (!requireAuth(req, res)) return;
 
+  if (process.env.AIRTABLE_TOKEN) {
+    try {
+      const cached = await airtablePayload(process.env.AIRTABLE_TOKEN);
+      if (cached) {
+        res.status(200).json(cached);
+        return;
+      }
+    } catch (error) {
+      console.error("Daily dashboard Airtable refresh failed:", error.message);
+    }
+  }
+
   if (!hasGraphConfig()) {
-    res.status(200).json(samplePayload());
+    res.status(200).json(samplePayload("Outlook sync cache is empty"));
     return;
   }
 
