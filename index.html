@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b101b">
-  <link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/rory-avatar-clean.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
@@ -513,26 +513,26 @@
       .shortcut-icon { width: 70px; height: 70px; border-radius: 50%; }
     }
   </style>
+  <link rel="stylesheet" href="/site-nav.css">
 </head>
 <body>
   <main class="home">
     <img class="background-photo" src="/assets/rory-beach-home-web.jpg" alt="Rory running on the beach">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Aurora home">
-        <img src="/aurora-icon.svg" alt="">
+    <header class="topbar aurora-header">
+      <a class="brand aurora-brand" href="/" aria-label="Aurora home">
+        <img class="aurora-brand-avatar" src="/assets/rory-avatar-clean.png" alt="">
         <span>Aurora</span>
       </a>
-      <div class="nav-wrap">
-        <nav class="nav" aria-label="Aurora navigation">
-          <a href="/" aria-current="page">Home</a>
-          <a href="/daily.html">Today</a>
-          <a href="/tools.html?mode=Tools">Tools</a>
-          <a href="/tools.html?mode=Sources">Sources</a>
-          <a href="/subscriptions.html">Subscriptions</a>
+      <div class="nav-wrap aurora-header-actions">
+        <nav class="nav aurora-tabs" aria-label="Aurora navigation">
+          <a class="aurora-tab active" href="/" aria-current="page">Home</a>
+          <a class="aurora-tab" href="/daily.html">Today</a>
+          <a class="aurora-tab" href="/tools.html?mode=Tools">Tools</a>
+          <a class="aurora-tab" href="/tools.html?mode=Sources">Sources</a>
+          <a class="aurora-tab" href="/subscriptions.html">Subscriptions</a>
         </nav>
-        <span class="profile" aria-label="Chadi">C</span>
       </div>
     </header>
 
@@ -546,7 +546,7 @@
       </form>
 
       <div class="shortcuts" aria-label="Most visited">
-        <a class="shortcut" href="/daily.html"><span class="shortcut-icon"><img src="/aurora-icon.svg" alt=""></span><span>Today</span></a>
+        <a class="shortcut" href="/daily.html"><span class="shortcut-icon"><img src="/assets/rory-avatar-clean.png" alt=""></span><span>Today</span></a>
         <a class="shortcut" href="https://maps.google.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=maps.google.com&sz=128" alt=""></span><span>Maps</span></a>
         <a class="shortcut" href="https://www.youtube.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt=""></span><span>YouTube</span></a>
         <a class="shortcut" href="https://onedrive.live.com"><span class="shortcut-icon"><img src="https://w7.pngwing.com/pngs/786/952/png-transparent-microsoft-onedrive-drive-office-365-logo-icon.png" alt=""></span><span>OneDrive</span></a>

@@ -6,6 +6,6 @@
   "background_color": "#0b0d11",
   "theme_color": "#0b0d11",
   "icons": [
-    { "src": "/aurora-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "/assets/rory-avatar-clean.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }

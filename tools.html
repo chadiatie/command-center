@@ -3,13 +3,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0d11">
-<link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/rory-avatar-clean.png" type="image/png">
 <link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Tools & Sources · Aurora</title>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#cdd3df;}
-.wrap{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:22px 0 70px;}
+.wrap{width:min(1240px,calc(100% - 36px));margin:0 auto;padding:22px 0 70px;}
 .site-header{padding-bottom:18px;}
 .site-brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:17px;font-weight:800;}
 .brand-mark{display:grid;width:36px;height:36px;place-items:center;border:1px solid #415189;border-radius:11px;background:linear-gradient(145deg,#5264ff,#725cff);box-shadow:0 8px 20px rgba(80,77,255,.24);}
@@ -45,18 +48,21 @@ body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#
 .empty{color:#6b7180;font-size:15px;padding:40px 0;text-align:center;display:none;}
 .loading{color:#7b8190;padding:60px 0;text-align:center;font-size:16px;}
 @media(max-width:680px){.wrap{width:calc(100% - 24px);padding:14px 0 60px;}.site-tabs{margin-top:16px}.site-tab{flex:1 0 auto;padding:0 14px}.bar{top:0}.superhead{font-size:22px;padding:16px 18px}.grid{gap:15px}.tool{width:90px}}
-</style></head>
+</style>
+<link rel="stylesheet" href="/site-nav.css">
+</head>
 <body><div class="wrap">
-  <header class="site-header">
-    <a class="site-brand" href="/">
-      <span class="brand-mark" aria-hidden="true">A</span>
+  <header class="site-header aurora-header">
+    <a class="site-brand aurora-brand" href="/">
+      <img class="aurora-brand-avatar" src="/assets/rory-avatar-clean.png" alt="">
       <span>Aurora</span>
     </a>
-    <nav class="site-tabs" aria-label="Aurora sections">
-      <a class="site-tab" href="/daily.html">☀️ Today</a>
-      <button class="site-tab active" data-mode="Tools" type="button" aria-pressed="true">🧰 Tools</button>
-      <button class="site-tab" data-mode="Sources" type="button" aria-pressed="false">📰 Sources</button>
-      <a class="site-tab" href="/subscriptions.html">💳 Subscriptions</a>
+    <nav class="site-tabs aurora-tabs" aria-label="Aurora sections">
+      <a class="site-tab aurora-tab" href="/">Home</a>
+      <a class="site-tab aurora-tab" href="/daily.html">Today</a>
+      <button class="site-tab aurora-tab active" data-mode="Tools" type="button" aria-pressed="true">Tools</button>
+      <button class="site-tab aurora-tab" data-mode="Sources" type="button" aria-pressed="false">Sources</button>
+      <a class="site-tab aurora-tab" href="/subscriptions.html">Subscriptions</a>
     </nav>
   </header>
   <p class="sub" id="count"></p>

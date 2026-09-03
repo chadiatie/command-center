@@ -4,8 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#080d17">
-  <link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/rory-avatar-clean.png" type="image/png">
   <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Subscriptions · Aurora</title>
   <style>
     :root {
@@ -673,23 +676,25 @@
       *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="/site-nav.css">
 </head>
 <body>
   <main class="shell">
-    <header class="site-header">
-      <div class="header-top">
-        <a class="site-brand" href="/">
-          <span class="brand-mark" aria-hidden="true">A</span>
+    <header class="site-header aurora-header">
+        <a class="site-brand aurora-brand" href="/">
+          <img class="aurora-brand-avatar" src="/assets/rory-avatar-clean.png" alt="">
           <span>Aurora</span>
         </a>
+      <div class="header-top aurora-header-actions">
+        <nav class="site-tabs aurora-tabs" aria-label="Aurora sections">
+          <a class="site-tab aurora-tab" href="/">Home</a>
+          <a class="site-tab aurora-tab" href="/daily.html">Today</a>
+          <a class="site-tab aurora-tab" href="/tools.html?mode=Tools">Tools</a>
+          <a class="site-tab aurora-tab" href="/tools.html?mode=Sources">Sources</a>
+          <a class="site-tab aurora-tab active" href="/subscriptions.html" aria-current="page">Subscriptions</a>
+        </nav>
         <button class="logout-button" id="logoutButton" type="button" hidden>Sign out</button>
       </div>
-      <nav class="site-tabs" aria-label="Aurora sections">
-        <a class="site-tab" href="/daily.html">☀️ Today</a>
-        <a class="site-tab" href="/tools.html?mode=Tools">🧰 Tools</a>
-        <a class="site-tab" href="/tools.html?mode=Sources">📰 Sources</a>
-        <a class="site-tab active" href="/subscriptions.html" aria-current="page">💳 Subscriptions</a>
-      </nav>
     </header>
 
     <section class="login-gate" id="loginGate" aria-labelledby="loginTitle">
