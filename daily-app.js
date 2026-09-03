@@ -288,6 +288,7 @@
   }
 
   function updateItem(kind, id, changes) {
+    prepareDailyStores();
     const key = STORAGE[kind];
     const state = readStore(key, { day: dayKey(), items: [] });
     state.items = state.items.map((item) => item.id === id ? { ...item, ...changes } : item);
@@ -296,6 +297,7 @@
   }
 
   function deleteItem(kind, id) {
+    prepareDailyStores();
     const key = STORAGE[kind];
     const state = readStore(key, { day: dayKey(), items: [] });
     state.items = state.items.filter((item) => item.id !== id);
@@ -306,6 +308,7 @@
   function addItem(kind, text) {
     const clean = text.trim();
     if (!clean) return;
+    prepareDailyStores();
     const key = STORAGE[kind];
     const state = readStore(key, { day: dayKey(), items: [] });
     state.items.push({ id: uniqueId(), text: clean, done: false });
@@ -342,6 +345,8 @@
   }
 
   async function refreshPage() {
+    if (els.refreshButton.disabled) return;
+    setDayPart();
     els.refreshButton.disabled = true;
     try {
       const authenticated = await loadWeather();
@@ -411,12 +416,21 @@
     refreshPage();
   });
   setInterval(() => {
-    if (activeDay === dayKey()) return;
-    prepareDailyStores();
-    renderNotes();
-    renderRituals();
+    const changedDay = activeDay !== dayKey();
+    const changedPart = (dayPart() === "morning" && els.morningView.hidden)
+      || (dayPart() === "afternoon" && els.afternoonView.hidden)
+      || (dayPart() === "evening" && els.eveningView.hidden);
+    if (changedDay) {
+      prepareDailyStores();
+      renderNotes();
+      renderRituals();
+    }
     setDayPart();
+    if (changedDay || changedPart) refreshPage();
   }, 60000);
+  setInterval(() => {
+    if (document.visibilityState === "visible") refreshPage();
+  }, 15 * 60000);
 
   prepareDailyStores();
   renderNotes();
@@ -424,4 +438,3 @@
   setDayPart();
   refreshPage();
 })();
-
