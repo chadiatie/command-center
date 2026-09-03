@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d16">
+  <link rel="icon" href="/aurora-icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
+  <title>Today · Aurora</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d16;
+      --panel: rgba(18, 24, 39, .76);
+      --panel-strong: rgba(22, 29, 47, .92);
+      --line: rgba(255,255,255,.1);
+      --ink: #f7f8fd;
+      --muted: #9ba5b9;
+      --violet: #8b78ff;
+      --violet-soft: #bdb5ff;
+      --cyan: #67d9e8;
+      --amber: #ffcb72;
+      --green: #66dfb2;
+      --shadow: 0 22px 70px rgba(0,0,0,.32);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      background:
+        radial-gradient(circle at 12% 5%, rgba(92, 74, 207, .22), transparent 34rem),
+        radial-gradient(circle at 92% 4%, rgba(34, 145, 166, .12), transparent 29rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .material-symbols-rounded { font-variation-settings: "FILL" 0, "wght" 420, "GRAD" 0, "opsz" 24; }
+    .shell { width: min(1240px, calc(100% - 36px)); margin: 0 auto; padding: 24px 0 56px; }
+    .site-header { display: flex; align-items: center; justify-content: space-between; gap: 22px; margin-bottom: 42px; }
+    .site-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 700; }
+    .brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(145deg, #a493ff, #6b54e7); box-shadow: 0 9px 24px rgba(97, 74, 226, .34); }
+    .site-tabs { display: flex; align-items: center; gap: 7px; padding: 5px; border: 1px solid var(--line); border-radius: 14px; background: rgba(15, 20, 33, .62); }
+    .site-tab { padding: 9px 13px; border-radius: 10px; color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .site-tab:hover, .site-tab:focus-visible { color: #fff; background: rgba(255,255,255,.06); outline: none; }
+    .site-tab.active { color: #fff; background: rgba(139,120,255,.2); box-shadow: inset 0 0 0 1px rgba(171,157,255,.22); }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .ghost-button, .refresh-button, .primary-action {
+      border: 1px solid var(--line); border-radius: 12px; color: #fff; cursor: pointer; transition: .18s ease;
+    }
+    .ghost-button { padding: 9px 12px; background: rgba(255,255,255,.04); }
+    .ghost-button:hover, .refresh-button:hover, .primary-action:hover { transform: translateY(-1px); border-color: rgba(183,173,255,.5); }
+    .intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 9px; color: var(--violet-soft); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(38px, 5.5vw, 68px); letter-spacing: -.055em; line-height: .98; }
+    .date-line { margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+    .live-context { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 15px; background: rgba(16,22,36,.7); }
+    .weather-icon { color: var(--cyan); font-size: 28px; }
+    .context-copy { display: grid; gap: 2px; }
+    .context-copy strong { font-size: 14px; }
+    .context-copy small { color: var(--muted); font-size: 12px; }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .status { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font-size: 13px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 16px rgba(255,203,114,.55); }
+    .status.live .status-dot { background: var(--green); box-shadow: 0 0 16px rgba(102,223,178,.55); }
+    .refresh-button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(255,255,255,.04); }
+    .refresh-button .material-symbols-rounded { font-size: 18px; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 18px; }
+    .panel { min-width: 0; border: 1px solid var(--line); border-radius: 24px; background: linear-gradient(145deg, rgba(23,30,49,.86), rgba(13,18,30,.82)); box-shadow: var(--shadow); overflow: hidden; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 22px 17px; border-bottom: 1px solid var(--line); }
+    .panel-title { display: flex; align-items: center; gap: 12px; }
+    .panel-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: rgba(139,120,255,.15); color: var(--violet-soft); }
+    .panel-title h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+    .panel-title p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .count { color: var(--muted); font-size: 12px; }
+    .list { display: grid; }
+    .item { position: relative; display: grid; gap: 14px; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.075); transition: background .18s ease; }
+    .item:last-child { border-bottom: 0; }
+    .item[href]:hover { background: rgba(255,255,255,.035); }
+    .event { grid-template-columns: 70px minmax(0,1fr); }
+    .time { color: var(--violet-soft); font-size: 13px; font-weight: 700; line-height: 1.45; }
+    .item-main { min-width: 0; }
+    .item-main strong { display: block; overflow: hidden; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .item-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; color: var(--muted); font-size: 12px; }
+    .item-meta .material-symbols-rounded { font-size: 15px; }
+    .sample-badge { display: inline-flex; align-items: center; width: fit-content; margin-top: 8px; padding: 4px 7px; border: 1px solid rgba(255,203,114,.24); border-radius: 999px; background: rgba(255,203,114,.08); color: var(--amber); font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+    .mail { grid-template-columns: 8px minmax(0,1fr) auto; align-items: center; }
+    .priority { width: 8px; height: 8px; border-radius: 50%; background: rgba(155,165,185,.42); }
+    .priority.high { background: #ff7b8d; box-shadow: 0 0 12px rgba(255,123,141,.48); }
+    .mail-time { align-self: start; padding-top: 2px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .empty { padding: 42px 22px; color: var(--muted); text-align: center; }
+    .skeleton { height: 76px; margin: 16px 22px; border-radius: 14px; background: linear-gradient(90deg, rgba(255,255,255,.035), rgba(255,255,255,.08), rgba(255,255,255,.035)); background-size: 220% 100%; animation: shimmer 1.2s infinite linear; }
+    .connection-note { display: flex; align-items: flex-start; gap: 11px; margin-top: 18px; padding: 15px 17px; border: 1px solid rgba(255,203,114,.16); border-radius: 16px; background: rgba(255,203,114,.055); color: #d8ccae; font-size: 12px; line-height: 1.5; }
+    .connection-note .material-symbols-rounded { flex: 0 0 auto; color: var(--amber); font-size: 19px; }
+    .login-gate { width: min(430px, 100%); margin: 12vh auto 0; padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: var(--panel-strong); box-shadow: var(--shadow); text-align: center; }
+    .login-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 17px; background: rgba(139,120,255,.15); color: var(--violet-soft); }
+    .login-gate h1 { font-size: 28px; letter-spacing: -.04em; }
+    .login-copy { margin: 10px 0 23px; color: var(--muted); }
+    .field-label { display: grid; gap: 7px; text-align: left; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .field-label input { width: 100%; padding: 12px 13px; border: 1px solid var(--line); border-radius: 12px; outline: none; background: rgba(6,10,18,.7); color: #fff; }
+    .field-label input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139,120,255,.12); }
+    .primary-action { width: 100%; margin-top: 13px; padding: 12px 15px; border-color: rgba(160,145,255,.44); background: linear-gradient(145deg, #8e7aff, #6f59e9); font-weight: 700; }
+    .form-error { min-height: 18px; margin: 9px 0 0; color: #ff95a4; font-size: 12px; text-align: left; }
+    [hidden] { display: none !important; }
+    @keyframes shimmer { to { background-position: -220% 0; } }
+    @media (max-width: 820px) {
+      .shell { width: min(100% - 24px, 660px); padding-top: 15px; }
+      .site-header { align-items: flex-start; flex-direction: column; margin-bottom: 32px; }
+      .header-actions { width: 100%; overflow-x: auto; }
+      .site-tabs { flex: 1; overflow-x: auto; }
+      .intro { align-items: flex-start; flex-direction: column; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .live-context { width: 100%; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: calc(100% - 18px); }
+      .site-tab { padding: 8px 10px; }
+      .intro { margin-bottom: 20px; }
+      .panel { border-radius: 20px; }
+      .panel-head, .item { padding-left: 17px; padding-right: 17px; }
+      .event { grid-template-columns: 62px minmax(0,1fr); }
+      .mail { grid-template-columns: 8px minmax(0,1fr); }
+      .mail-time { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="site-header">
+      <a class="site-brand" href="/"><span class="brand-mark" aria-hidden="true">A</span><span>Aurora</span></a>
+      <div class="header-actions">
+        <nav class="site-tabs" aria-label="Aurora sections">
+          <a class="site-tab" href="/">Home</a>
+          <a class="site-tab active" href="/daily.html" aria-current="page">Today</a>
+          <a class="site-tab" href="/tools.html?mode=Tools">Tools</a>
+          <a class="site-tab" href="/tools.html?mode=Sources">Sources</a>
+          <a class="site-tab" href="/subscriptions.html">Subscriptions</a>
+        </nav>
+        <button class="ghost-button" id="logoutButton" type="button" hidden>Sign out</button>
+      </div>
+    </header>
+
+    <section class="login-gate" id="loginGate" aria-labelledby="loginTitle">
+      <div class="login-icon"><span class="material-symbols-rounded" aria-hidden="true">lock</span></div>
+      <h1 id="loginTitle">Private daily brief</h1>
+      <p class="login-copy">Use your Aurora password to open your agenda and inbox view.</p>
+      <form id="loginForm">
+        <label class="field-label" for="passwordInput">Password<input id="passwordInput" name="password" type="password" maxlength="256" autocomplete="current-password" required></label>
+        <p class="form-error" id="loginError" role="alert"></p>
+        <button class="primary-action" id="loginButton" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <div id="dashboard" hidden>
+      <section class="intro" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow">YOUR DAY AT A GLANCE</p>
+          <h1 id="pageTitle"><span id="greeting">Good afternoon</span>, Chadi.</h1>
+          <p class="date-line" id="todayLabel"></p>
+        </div>
+        <div class="live-context" aria-live="polite">
+          <span class="material-symbols-rounded weather-icon" id="weatherIcon" aria-hidden="true">partly_cloudy_day</span>
+          <span class="context-copy"><strong id="weatherText">Lausanne · loading</strong><small id="weatherDetail">Current weather</small></span>
+        </div>
+      </section>
+
+      <div class="status-row">
+        <span class="status" id="syncStatus" role="status"><span class="status-dot"></span><span id="syncText">Checking your sources…</span></span>
+        <button class="refresh-button" id="refreshButton" type="button"><span class="material-symbols-rounded" aria-hidden="true">refresh</span>Refresh</button>
+      </div>
+
+      <section class="dashboard-grid" aria-label="Daily dashboard">
+        <article class="panel" aria-labelledby="calendarTitle">
+          <header class="panel-head">
+            <div class="panel-title"><span class="panel-icon"><span class="material-symbols-rounded" aria-hidden="true">calendar_today</span></span><div><h2 id="calendarTitle">Today’s agenda</h2><p>Meetings and focus blocks</p></div></div>
+            <span class="count" id="calendarCount"></span>
+          </header>
+          <div class="list" id="calendarList"><div class="skeleton"></div><div class="skeleton"></div></div>
+        </article>
+
+        <article class="panel" aria-labelledby="inboxTitle">
+          <header class="panel-head">
+            <div class="panel-title"><span class="panel-icon"><span class="material-symbols-rounded" aria-hidden="true">inbox</span></span><div><h2 id="inboxTitle">Inbox priorities</h2><p>Unread and high-importance messages</p></div></div>
+            <span class="count" id="inboxCount"></span>
+          </header>
+          <div class="list" id="inboxList"><div class="skeleton"></div><div class="skeleton"></div></div>
+        </article>
+      </section>
+
+      <aside class="connection-note" id="connectionNote" hidden><span class="material-symbols-rounded" aria-hidden="true">info</span><span><strong>Sample data is active.</strong> Every sample item is labelled. Connect the Outlook mailbox you choose and this page will refresh the real agenda and priority inbox automatically every five minutes.</span></aside>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const els = Object.fromEntries(["loginGate","loginForm","passwordInput","loginError","loginButton","logoutButton","dashboard","greeting","todayLabel","weatherIcon","weatherText","weatherDetail","syncStatus","syncText","refreshButton","calendarList","calendarCount","inboxList","inboxCount","connectionNote"].map((id) => [id, document.getElementById(id)]));
+      const timeFormat = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Zurich" });
+      const dateFormat = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" });
+      const relativeFormat = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+      let refreshTimer;
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>\"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" })[character]);
+      }
+
+      function relativeTime(value) {
+        const milliseconds = new Date(value).getTime() - Date.now();
+        const minutes = Math.round(milliseconds / 60000);
+        if (Math.abs(minutes) < 60) return relativeFormat.format(minutes, "minute");
+        const hours = Math.round(minutes / 60);
+        if (Math.abs(hours) < 24) return relativeFormat.format(hours, "hour");
+        return relativeFormat.format(Math.round(hours / 24), "day");
+      }
+
+      function renderCalendar(items) {
+        els.calendarCount.textContent = `${items.length} ${items.length === 1 ? "item" : "items"}`;
+        if (!items.length) { els.calendarList.innerHTML = '<div class="empty">Your calendar is clear today.</div>'; return; }
+        els.calendarList.innerHTML = items.map((item) => {
+          const time = item.isAllDay ? "All day" : `${timeFormat.format(new Date(item.start))}<br>${timeFormat.format(new Date(item.end))}`;
+          const sample = item.isSample ? '<span class="sample-badge">SAMPLE</span>' : "";
+          const html = `<span class="time">${time}</span><span class="item-main"><strong>${escapeHtml(item.title)}</strong><span class="item-meta"><span class="material-symbols-rounded" aria-hidden="true">${item.location ? "location_on" : "schedule"}</span>${escapeHtml(item.location || "Calendar")}</span>${sample}</span>`;
+          return item.url ? `<a class="item event" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${html}</a>` : `<div class="item event">${html}</div>`;
+        }).join("");
+      }
+
+      function renderInbox(items) {
+        els.inboxCount.textContent = `${items.length} prioritised`;
+        if (!items.length) { els.inboxList.innerHTML = '<div class="empty">No unread priority messages.</div>'; return; }
+        els.inboxList.innerHTML = items.map((item) => {
+          const sample = item.isSample ? '<span class="sample-badge">SAMPLE</span>' : "";
+          const html = `<span class="priority ${item.importance === "high" ? "high" : ""}" aria-hidden="true"></span><span class="item-main"><strong>${escapeHtml(item.subject)}</strong><span class="item-meta"><span class="material-symbols-rounded" aria-hidden="true">person</span>${escapeHtml(item.from)}</span>${sample}</span><span class="mail-time">${escapeHtml(relativeTime(item.receivedAt))}</span>`;
+          return item.url ? `<a class="item mail" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${html}</a>` : `<div class="item mail">${html}</div>`;
+        }).join("");
+      }
+
+      function setDashboardVisible() {
+        els.loginGate.hidden = true;
+        els.dashboard.hidden = false;
+        els.logoutButton.hidden = false;
+      }
+
+      function sampleFallback() {
+        const today = new Date();
+        const local = (hour, minute) => {
+          const value = new Date(today);
+          value.setHours(hour, minute, 0, 0);
+          return value.toISOString();
+        };
+        return {
+          mode: "sample", refreshedAt: new Date().toISOString(),
+          calendar: [
+            { id: "local-1", title: "Deep work: quarterly analytics review", start: local(9,0), end: local(10,30), location: "Focus block", isSample: true },
+            { id: "local-2", title: "Weekly team sync", start: local(11,0), end: local(11,45), location: "Microsoft Teams", isSample: true },
+            { id: "local-3", title: "Family admin", start: local(18,15), end: local(18,45), location: "Personal", isSample: true }
+          ],
+          inbox: [
+            { id: "mail-1", subject: "Weekly status — ready for your review", from: "Analytics team", receivedAt: new Date(Date.now()-38*60000).toISOString(), importance: "high", isSample: true },
+            { id: "mail-2", subject: "Booking confirmation and next steps", from: "Travel service", receivedAt: new Date(Date.now()-3*3600000).toISOString(), importance: "normal", isSample: true },
+            { id: "mail-3", subject: "Subscription renewal reminder", from: "Online service", receivedAt: new Date(Date.now()-8*3600000).toISOString(), importance: "normal", isSample: true }
+          ]
+        };
+      }
+
+      async function loadDashboard({ allowLocalFallback = true } = {}) {
+        els.refreshButton.disabled = true;
+        try {
+          const response = await fetch("/api/daily", { credentials: "same-origin", cache: "no-store" });
+          if (response.status === 401) { els.loginGate.hidden = false; els.dashboard.hidden = true; els.logoutButton.hidden = true; return; }
+          if (!response.ok) throw new Error("Daily data unavailable");
+          const data = await response.json();
+          setDashboardVisible();
+          renderCalendar(data.calendar || []);
+          renderInbox(data.inbox || []);
+          const isLive = data.mode === "live";
+          els.syncStatus.classList.toggle("live", isLive);
+          els.syncText.textContent = isLive ? `Live from Outlook · refreshed ${relativeTime(data.refreshedAt)}` : `Outlook sample · ${data.reason || "auto-refresh ready"}`;
+          els.connectionNote.hidden = isLive;
+        } catch (error) {
+          if (!allowLocalFallback) { els.syncText.textContent = "Could not refresh — keeping the last view"; return; }
+          const data = sampleFallback();
+          setDashboardVisible();
+          renderCalendar(data.calendar);
+          renderInbox(data.inbox);
+          els.syncText.textContent = "Local preview · sample data";
+          els.connectionNote.hidden = false;
+        } finally {
+          els.refreshButton.disabled = false;
+          clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => loadDashboard({ allowLocalFallback: false }), 5 * 60 * 1000);
+        }
+      }
+
+      async function loadWeather() {
+        const states = (code) => {
+          if (code === 0) return ["clear_day", "Clear sky"];
+          if (code <= 3) return ["partly_cloudy_day", "Partly cloudy"];
+          if (code <= 48) return ["foggy", "Fog"];
+          if (code <= 67 || (code >= 80 && code <= 82)) return ["rainy", "Rain"];
+          if (code <= 77 || (code >= 85 && code <= 86)) return ["weather_snowy", "Snow"];
+          if (code >= 95) return ["thunderstorm", "Thunderstorms"];
+          return ["partly_cloudy_day", "Current weather"];
+        };
+        try {
+          const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=46.5197&longitude=6.6323&current=temperature_2m,weather_code&timezone=Europe%2FZurich&forecast_days=1");
+          if (!response.ok) throw new Error();
+          const current = (await response.json()).current;
+          const [icon, condition] = states(current.weather_code);
+          els.weatherIcon.textContent = icon;
+          els.weatherText.textContent = `Lausanne · ${Math.round(current.temperature_2m)}°`;
+          els.weatherDetail.textContent = condition;
+        } catch (_) {
+          els.weatherText.textContent = "Lausanne";
+          els.weatherDetail.textContent = "Weather unavailable";
+        }
+      }
+
+      const now = new Date();
+      const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hour12: false, timeZone: "Europe/Zurich" }).format(now));
+      els.greeting.textContent = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+      els.todayLabel.textContent = dateFormat.format(now);
+      els.refreshButton.addEventListener("click", () => loadDashboard({ allowLocalFallback: false }));
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") loadDashboard({ allowLocalFallback: false }); });
+      els.loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        els.loginButton.disabled = true;
+        els.loginError.textContent = "";
+        try {
+          const response = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: els.passwordInput.value }) });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.error || "Could not sign in.");
+          els.passwordInput.value = "";
+          await loadDashboard({ allowLocalFallback: false });
+        } catch (error) { els.loginError.textContent = error.message; }
+        finally { els.loginButton.disabled = false; }
+      });
+      els.logoutButton.addEventListener("click", async () => { try { await fetch("/api/logout", { method: "POST", body: "{}" }); } catch (_) {} location.reload(); });
+      loadWeather();
+      loadDashboard();
+    })();
+  </script>
+</body>
+</html>
+

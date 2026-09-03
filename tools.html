@@ -53,6 +53,7 @@ body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#
       <span>Aurora</span>
     </a>
     <nav class="site-tabs" aria-label="Aurora sections">
+      <a class="site-tab" href="/daily.html">☀️ Today</a>
       <button class="site-tab active" data-mode="Tools" type="button" aria-pressed="true">🧰 Tools</button>
       <button class="site-tab" data-mode="Sources" type="button" aria-pressed="false">📰 Sources</button>
       <a class="site-tab" href="/subscriptions.html">💳 Subscriptions</a>
@@ -168,4 +169,5 @@ fetch('/api/data').then(r=>r.json()).then(d=>{
 }).catch(e=>{root.innerHTML='<div class="loading">Could not load data. Check the AIRTABLE_TOKEN setting in Vercel.<br><small>'+e+'</small></div>';});
 </script>
 </body></html>
+
 
