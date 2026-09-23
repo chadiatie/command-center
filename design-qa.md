@@ -1,3 +1,33 @@
+# Aurora inner-page editorial system — 23 September 2026
+
+final result: passed
+
+## Selected direction and scope
+
+- Selected visual: option 2, `C:/Users/chadi/.codex/generated_images/01a0679b-160b-7c11-88d8-4204ce8b5df2/exec-201262ed-9af4-4507-a42e-0f82cd02f1f4.png`.
+- Scope: Today, Tools, Sources, and Subscriptions. The existing photo-first Home composition stays visually unchanged.
+- Reference language: Wispr-style warm ivory light mode, deep ink/forest dark mode, editorial EB Garamond display type, simple outlines, lilac selection states, and generous spacing.
+
+## Visual comparison
+
+- The selected reference and rendered Today page were inspected together at the reference-sized desktop viewport (1488 × 1057), then rechecked at 390 × 844.
+- Today preserves the two-column greeting/current-weather plus hourly forecast composition. The lower editorial quote and lilac sticky-note split map directly to the selected option while preserving Rory pickup and the unlimited daily checklist behavior.
+- One generated-reference artifact was intentionally corrected: Rory appears once beside Sign out, not duplicated beside the Aurora wordmark.
+- Tools and Sources share the same header geometry, serif hierarchy, filter treatment, light/dark tokens, and responsive breakpoints. Subscriptions keeps its working data views while using the same system.
+- No actionable P0/P1/P2 issues remain. A light-mode Subscriptions contrast issue and small-screen header spacing were found during review and fixed.
+
+## Interaction and regression checks
+
+- In-app browser used for all visual and interaction checks.
+- Light and dark modes were exercised on Today, Tools, and Subscriptions. The selected mode persisted while navigating between pages and is now shared with Home.
+- Today was rendered with realistic MeteoSwiss-shaped mock data at desktop and mobile sizes; responsive stacking, hourly overflow, Rory pickup, sticky-note form, and Sign out placement were checked.
+- Tools rendered with realistic grouped tool/source data; search, category chips, and mode navigation remained wired to the existing logic.
+- Subscriptions rendered with realistic subscription data in both themes; metrics, chart labels, filters, table cards, and wishlist controls remained readable.
+- Home was reopened after the shared-theme change and retained its existing photo, search, shortcut, and navigation layout.
+- Browser console produced no warnings or errors in the final Home check. JavaScript syntax and git whitespace checks passed.
+
+---
+
 # Aurora Home design QA — 3 September 2026
 
 final result: passed

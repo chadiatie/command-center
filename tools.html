@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en" data-theme="dark"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0d11">
@@ -7,7 +7,8 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap" rel="stylesheet">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("auroraTheme")||localStorage.getItem("auroraHomeTheme")||"dark"}catch(_){}</script>
 <title>Tools & Sources · Aurora</title>
 <style>
 *{box-sizing:border-box;}
@@ -50,13 +51,11 @@ body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#
 @media(max-width:680px){.wrap{width:calc(100% - 24px);padding:14px 0 60px;}.site-tabs{margin-top:16px}.site-tab{flex:1 0 auto;padding:0 14px}.bar{top:0}.superhead{font-size:22px;padding:16px 18px}.grid{gap:15px}.tool{width:90px}}
 </style>
 <link rel="stylesheet" href="/site-nav.css">
+<link rel="stylesheet" href="/inner-theme.css">
 </head>
-<body><div class="wrap">
+<body class="inner-page"><div class="wrap">
   <header class="site-header aurora-header">
-    <a class="site-brand aurora-brand" href="/">
-      <img class="aurora-brand-avatar" src="/assets/rory-avatar-clean.png" alt="">
-      <span>Aurora</span>
-    </a>
+    <a class="site-brand aurora-brand" href="/" aria-label="Aurora home">Aurora</a>
     <nav class="site-tabs aurora-tabs" aria-label="Aurora sections">
       <a class="site-tab aurora-tab" href="/">Home</a>
       <a class="site-tab aurora-tab" href="/daily.html">Today</a>
@@ -64,8 +63,18 @@ body{margin:0;background:#080d17;font-family:'Segoe UI',Arial,sans-serif;color:#
       <button class="site-tab aurora-tab" data-mode="Sources" type="button" aria-pressed="false">Sources</button>
       <a class="site-tab aurora-tab" href="/subscriptions.html">Subscriptions</a>
     </nav>
+    <div class="aurora-account">
+      <div class="inner-theme-toggle" role="group" aria-label="Appearance">
+        <button type="button" data-theme-choice="light" aria-label="Light mode" aria-pressed="false"><span class="material-symbols-rounded" aria-hidden="true">light_mode</span></button>
+        <button type="button" data-theme-choice="dark" aria-label="Dark mode" aria-pressed="true"><span class="material-symbols-rounded" aria-hidden="true">dark_mode</span></button>
+      </div>
+      <a class="aurora-profile" href="/" aria-label="Aurora home"><img src="/assets/rory-avatar-clean.png" alt=""></a>
+    </div>
   </header>
-  <p class="sub" id="count"></p>
+  <section class="collection-hero" aria-labelledby="collectionTitle">
+    <div><p class="collection-kicker">YOUR DIGITAL SHELF</p><h1 id="collectionTitle">Tools</h1></div>
+    <p class="sub" id="count"></p>
+  </section>
   <div class="bar">
     <input id="search" type="text" placeholder="🔍  Search…" autocomplete="off">
     <div class="chips" id="chips"></div>
@@ -91,7 +100,7 @@ let DATA={Tools:[],Sources:[]};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let activeMode=requestedMode==='Sources'?'Sources':'Tools',activeSec='all';
 const root=document.getElementById('root'),chipsEl=document.getElementById('chips'),
-      search=document.getElementById('search'),empty=document.getElementById('empty'),countEl=document.getElementById('count');
+      search=document.getElementById('search'),empty=document.getElementById('empty'),countEl=document.getElementById('count'),collectionTitle=document.getElementById('collectionTitle');
 
 function groupMode(items){
   const secMin={},catMin={};
@@ -119,6 +128,7 @@ function tileEl(it){
   return a;
 }
 function renderMode(){
+  collectionTitle.textContent=activeMode;
   const groups=groupMode(DATA[activeMode]||[]);
   root.innerHTML='';
   groups.forEach((g,gi)=>{
@@ -174,6 +184,7 @@ fetch('/api/data').then(r=>r.json()).then(d=>{
   renderMode();
 }).catch(e=>{root.innerHTML='<div class="loading">Could not load data. Check the AIRTABLE_TOKEN setting in Vercel.<br><small>'+e+'</small></div>';});
 </script>
+<script src="/site-theme.js"></script>
 </body></html>
 
 

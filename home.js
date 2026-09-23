@@ -1,5 +1,6 @@
 (() => {
-  const key = "auroraHomeTheme";
+  const key = "auroraTheme";
+  const legacyKey = "auroraHomeTheme";
   const root = document.documentElement;
   const buttons = [...document.querySelectorAll("[data-theme-choice]")];
   function applyTheme(theme, save = false) {
@@ -7,10 +8,10 @@
     root.dataset.theme = value;
     buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === value)));
     document.querySelector('meta[name="theme-color"]').content = value === "light" ? "#f7f3eb" : "#211d28";
-    if (save) { try { localStorage.setItem(key, value); } catch (_) {} }
+    if (save) { try { localStorage.setItem(key, value); localStorage.setItem(legacyKey, value); } catch (_) {} }
   }
   buttons.forEach(button => button.addEventListener("click", () => applyTheme(button.dataset.themeChoice, true)));
-  window.addEventListener("storage", event => { if (event.key === key) applyTheme(event.newValue); });
+  window.addEventListener("storage", event => { if (event.key === key || event.key === legacyKey) applyTheme(event.newValue); });
   applyTheme(root.dataset.theme);
   function updateGreeting() {
     const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", hour: "2-digit", hourCycle: "h23" }).format(new Date()));
