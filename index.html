@@ -1,59 +1,23 @@
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#211d28">
-  <link rel="icon" href="/assets/rory-avatar-clean.png" type="image/png">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="preload" as="image" href="/assets/rory-beach-home-web.jpg" fetchpriority="high">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
-  <script>
-    try { document.documentElement.dataset.theme = (localStorage.getItem("auroraTheme") || localStorage.getItem("auroraHomeTheme")) === "light" ? "light" : "dark"; } catch (_) {}
-  </script>
-  <link rel="stylesheet" href="/site-nav.css">
-  <link rel="stylesheet" href="/home.css">
-  <script src="/home.js" defer></script>
-  <title>Aurora</title>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071310">
+  <link rel="icon" href="/assets/rory-avatar-clean.png"><link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('auroraTheme')||localStorage.getItem('auroraHomeTheme')||'dark'}catch{}const legacyMode=new URLSearchParams(location.search).get('mode');if(legacyMode==='Tools'||legacyMode==='Sources')location.replace('/apps.html?mode='+legacyMode);</script>
+  <link rel="stylesheet" href="/hub.css"><title>Today · Aurora</title>
+  <script src="/hub-shell.js" defer></script><script src="/site-theme.js" defer></script><script src="/brand-logos.js" defer></script><script src="/today.js" defer></script>
 </head>
-<body>
-  <main class="home">
-    <img class="background-photo" src="/assets/rory-beach-home-web.jpg" alt="Rory enjoying the beach" fetchpriority="high">
-    <header class="topbar aurora-header">
-      <nav class="aurora-tabs" aria-label="Aurora sections">
-        <a class="aurora-tab active" href="/" aria-current="page">Home</a>
-        <a class="aurora-tab" href="/daily.html">Today</a>
-        <a class="aurora-tab" href="/tools.html?mode=Tools">Tools</a>
-        <a class="aurora-tab" href="/tools.html?mode=Sources">Sources</a>
-        <a class="aurora-tab" href="/subscriptions.html">Subscriptions</a>
-      </nav>
-      <div class="home-controls">
-        <span class="home-wordmark" aria-hidden="true">Aurora</span>
-        <div class="theme-switch" role="group" aria-label="Appearance">
-          <button type="button" data-theme-choice="light" aria-label="Light mode" aria-pressed="false" title="Light mode"><span class="material-symbols-rounded" aria-hidden="true">light_mode</span></button>
-          <button type="button" data-theme-choice="dark" aria-label="Dark mode" aria-pressed="true" title="Dark mode"><span class="material-symbols-rounded" aria-hidden="true">dark_mode</span></button>
-        </div>
-        <a class="aurora-brand" href="/" aria-label="Aurora home"><img class="aurora-brand-avatar" src="/assets/rory-avatar-clean.png" alt=""></a>
-      </div>
-    </header>
-    <section class="stage" aria-labelledby="greeting">
-      <h1 id="greeting">Good evening, Chadi.</h1>
-      <form class="search" action="https://www.google.com/search" method="get" role="search">
-        <span class="material-symbols-rounded" aria-hidden="true">search</span>
-        <input id="homeSearch" type="search" name="q" autocomplete="off" required placeholder="Search Google" aria-label="Search Google">
-        <button type="submit" aria-label="Search"><span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button>
-      </form>
-      <div class="shortcuts" aria-label="Most visited">
-        <a class="shortcut" href="https://maps.google.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=maps.google.com&sz=128" alt=""></span><span>Maps</span></a>
-        <a class="shortcut" href="https://www.youtube.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt=""></span><span>YouTube</span></a>
-        <a class="shortcut" href="https://onedrive.live.com"><span class="shortcut-icon"><img class="onedrive-icon" src="/assets/onedrive.svg" alt=""></span><span>OneDrive</span></a>
-        <a class="shortcut" href="https://www.linkedin.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt=""></span><span>LinkedIn</span></a>
-        <a class="shortcut" href="https://www.flashscore.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=flashscore.com&sz=128" alt=""></span><span>Flashscore</span></a>
-        <a class="shortcut" href="https://lifehacker.com"><span class="shortcut-icon"><img src="https://www.google.com/s2/favicons?domain=lifehacker.com&sz=128" alt=""></span><span>Lifehacker</span></a>
-      </div>
-    </section>
-  </main>
-</body>
-</html>
+<body class="hub-page" data-page="today">
+  <div class="hub-shell">
+    <header class="hub-header" id="hubHeader"></header>
+    <section class="page-intro today-intro" aria-labelledby="pageTitle"><div><h1 id="pageTitle">Good afternoon, Chadi.</h1><p class="date-line" id="todayLabel"></p></div><blockquote class="daily-quote"><p id="dailyQuote">Make room for one meaningful thing today.</p><footer>Daily motivation · Aurora</footer></blockquote></section>
+    <main>
+      <div class="news-toolbar"><div class="news-tabs" role="group" aria-label="News topics"><button type="button" data-topic="For you" aria-pressed="true">For you</button><button type="button" data-topic="AI" aria-pressed="false">AI</button><button type="button" data-topic="World" aria-pressed="false">World</button><button type="button" data-topic="Switzerland" aria-pressed="false">Switzerland</button><button type="button" data-topic="Saved" aria-pressed="false">Saved</button></div><button class="quiet-button" id="refreshNews" type="button" aria-label="Refresh news"><span class="material-symbols-rounded" aria-hidden="true">refresh</span><span class="refresh-label">Refresh</span></button></div>
+      <p class="news-state" id="newsState" role="status">Loading the latest headlines…</p>
+      <div id="newsFeed"><div class="loading-skeleton" aria-label="Loading news"></div></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body></html>

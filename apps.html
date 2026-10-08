@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071310">
+  <link rel="icon" href="/assets/rory-avatar-clean.png"><link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0" rel="stylesheet">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('auroraTheme')||localStorage.getItem('auroraHomeTheme')||'dark'}catch{}</script>
+  <link rel="stylesheet" href="/hub.css"><title>Apps · Aurora</title>
+  <script src="/hub-shell.js" defer></script><script src="/site-theme.js" defer></script><script src="/brand-logos.js" defer></script><script src="/apps.js" defer></script>
+</head>
+<body class="hub-page" data-page="apps">
+  <div class="hub-shell">
+    <header class="hub-header" id="hubHeader"></header>
+    <section class="page-intro" aria-labelledby="pageTitle"><div><h1 id="pageTitle">Apps</h1><p>Your tools and sources, one place.</p></div></section>
+    <section class="top-apps" aria-labelledby="topAppsTitle"><div class="section-top"><h2 id="topAppsTitle">Top Apps</h2><button id="editFavorites" type="button" class="text-button"><span class="material-symbols-rounded" aria-hidden="true">edit</span>Edit favorites</button></div><div class="favorites" id="favorites"><p class="empty-state">Loading your apps…</p></div></section>
+    <div class="catalog-layout">
+      <aside class="catalog-sidebar" aria-label="Browse apps">
+        <div class="mode-toggle" role="group" aria-label="Collection"><button type="button" data-mode="Tools" aria-pressed="true">Tools &amp; AI</button><button type="button" data-mode="Sources" aria-pressed="false">Sources</button></div>
+        <nav class="category-nav" id="categoryNav" aria-label="Categories"></nav>
+        <label class="mobile-categories">Category<select id="mobileCategory" aria-label="Category"></select></label>
+        <div class="sidebar-sub" id="sidebarSub"></div>
+      </aside>
+      <main class="catalog-content">
+        <div class="catalog-heading"><div><h2 id="collectionTitle">Think &amp; Assist</h2><div class="results-count" id="resultCount" aria-live="polite"></div></div><label class="catalog-search"><span class="material-symbols-rounded" aria-hidden="true">search</span><input id="appSearch" type="search" placeholder="Search apps…" aria-label="Search apps" autocomplete="off"></label></div>
+        <div class="subcategories" id="subcategories" aria-label="Subcategories"></div>
+        <div id="catalogResults"><p class="empty-state">Loading your catalog…</p></div>
+      </main>
+    </div>
+  </div>
+  <dialog id="favoriteDialog" aria-labelledby="favoriteDialogTitle"><div class="dialog-top"><h2 id="favoriteDialogTitle">Your Top Apps</h2><button id="closeFavorites" type="button" class="quiet-button" aria-label="Close favorites"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div><p>Star any tool or source to pin it here. Favorites are saved in this browser.</p><div class="favorite-editor" id="favoriteEditor"></div><p id="favoriteHint"></p><button id="resetFavorites" class="quiet-button" type="button">Restore starter favorites</button></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body></html>

@@ -1,4 +1,12 @@
 (() => {
+  document.querySelectorAll('.aurora-tabs').forEach((nav) => {
+    nav.querySelectorAll('a,button').forEach((item) => {
+      const label=item.textContent.trim();
+      if(label==='Home'||label==='Sources')item.remove();
+      else if(label==='Today')item.setAttribute('href','/');
+      else if(label==='Tools'){item.textContent='Apps';item.setAttribute('href','/apps.html');}
+    });
+  });
   const key = "auroraTheme";
   const legacyKey = "auroraHomeTheme";
   const root = document.documentElement;
