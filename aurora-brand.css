@@ -1,0 +1,8 @@
+/* Rory-inspired Aurora identity. Shared by Today, Apps and Subscriptions. */
+.hub-brand {display:inline-flex;align-items:center;gap:12px;width:max-content;min-width:0;white-space:nowrap;}
+.aurora-brand-icon {display:block;flex:0 0 auto;width:48px;height:48px;object-fit:contain;}
+.inner-page .aurora-brand {gap:12px!important;}
+.inner-page .aurora-brand .aurora-brand-name {display:inline!important;}
+.inner-page .aurora-profile,.inner-page .aurora-profile img {border-radius:12px;}
+.inner-page .aurora-profile img {object-fit:contain;}
+@media(max-width:760px){.hub-brand{gap:10px;}.aurora-brand-icon{width:40px;height:40px;}.inner-page .aurora-brand{gap:9px!important;}}
