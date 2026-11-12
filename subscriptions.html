@@ -822,9 +822,10 @@
         <label class="field-label field-wide">Name<input name="name" maxlength="120" required autocomplete="off"></label>
         <label class="field-label">Category
           <select name="category" required>
+            <option value="" disabled>Select a category</option>
             <option>AI</option><option>Productivity</option><option>Health</option><option>Entertainment</option>
             <option>Music</option><option>Family</option><option>Cloud</option><option>Photography</option>
-            <option>Transport</option><option>Other</option>
+            <option>Transport</option><option>Finance</option>
           </select>
         </label>
         <label class="field-label">Status<select name="status" required><option>Active</option><option>Paused</option></select></label>
@@ -851,8 +852,9 @@
       Entertainment: ["#783754", "#e45e9e", "#f178b1"], Cloud: ["#25548b", "#5ca4ff", "#77b8ff"],
       Music: ["#743b4f", "#ff627c", "#ff7c91"], Family: ["#735d14", "#ffc62e", "#ffd85e"],
       Health: ["#176a57", "#2bd9a3", "#54e6ba"], Photography: ["#3b4c8d", "#7e9dff", "#9db5ff"],
-      Transport: ["#195d72", "#35c9e8", "#65d9ef"], Other: ["#465267", "#8b98ae", "#aab4c5"],
+      Transport: ["#195d72", "#35c9e8", "#65d9ef"], Finance: ["#825024", "#ef9850", "#ffb775"],
     };
+    const uncategorizedColors = ["#465267", "#8b98ae", "#aab4c5"];
     const statusColors = { Active: "#2bd9a3", Paused: "#ffc62e" };
 
     const dashboard = document.getElementById("dashboard");
@@ -926,7 +928,7 @@
       return time;
     }
 
-    function categoryStyle(category) { const colors = categoryColors[category] || categoryColors.Other; return { start: colors[0], end: colors[1], text: colors[2] }; }
+    function categoryStyle(category) { const colors = categoryColors[category] || uncategorizedColors; return { start: colors[0], end: colors[1], text: colors[2] }; }
 
     function sortSubscriptions(items) {
       const statusRank = { Active: 0, Paused: 1 };
@@ -979,7 +981,7 @@
 
     function renderChart() {
       const totals = new Map();
-      subscriptions.filter((item) => item.status === "Active").forEach((item) => totals.set(item.category, (totals.get(item.category) || 0) + (item.yearly || 0)));
+      subscriptions.filter((item) => item.status === "Active" && item.category).forEach((item) => totals.set(item.category, (totals.get(item.category) || 0) + (item.yearly || 0)));
       const rows = [...totals.entries()].filter(([, value]) => value > 0).sort((a, b) => b[1] - a[1]);
       categoryChart.replaceChildren();
       if (!rows.length) {
@@ -1033,7 +1035,7 @@
       }
       visible.forEach((item) => {
         const colors = categoryStyle(item.category); const tr = document.createElement("tr");
-        const category = document.createElement("span"); category.className = "category-pill"; category.style.setProperty("--category-color", colors.text); category.textContent = item.category;
+        const category = document.createElement("span"); category.className = "category-pill"; category.style.setProperty("--category-color", colors.text); category.textContent = item.category || "—";
         const status = document.createElement("span"); status.className = "status"; status.style.setProperty("--status-color", statusColors[item.status] || statusColors.Paused); status.textContent = item.status;
         const edit = document.createElement("button"); edit.className = "edit-link"; edit.type = "button"; edit.title = `Edit ${item.name}`; edit.setAttribute("aria-label", edit.title); edit.textContent = "✎"; edit.addEventListener("click", () => openSubscriptionDialog(item));
         tr.append(
@@ -1094,7 +1096,7 @@
       dialogTitle.textContent = item ? "Edit subscription" : "Add subscription";
       subscriptionForm.elements.id.value = item?.id || "";
       subscriptionForm.elements.name.value = item?.name || "";
-      subscriptionForm.elements.category.value = item?.category || "AI";
+      subscriptionForm.elements.category.value = item?.category ?? "AI";
       subscriptionForm.elements.status.value = item?.status === "Paused" ? "Paused" : "Active";
       subscriptionForm.elements.cycle.value = item?.cycle === "Monthly" ? "Monthly" : "Yearly";
       subscriptionForm.elements.monthly.value = item?.monthly ?? 0;

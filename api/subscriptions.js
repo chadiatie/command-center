@@ -14,7 +14,7 @@ const CATEGORIES = new Set([
   "Music",
   "Family",
   "Cloud",
-  "Other",
+  "Finance",
   "Photography",
   "Transport",
 ]);
@@ -79,10 +79,11 @@ function numberOrZero(value) {
 function normalizeRecord(record) {
   const fields = record.fields || {};
   const rawStatus = selectName(fields.Status, "Active");
+  const category = selectName(fields.Category);
   return {
     id: record.id,
     name: String(fields.Name || "").trim(),
-    category: selectName(fields.Category, "Other"),
+    category: category === "Other" ? "" : category,
     status: rawStatus === "Active" ? "Active" : "Paused",
     cycle: selectName(fields.Cycle, "Yearly"),
     monthly: numberOrZero(fields["Cost Monthly (CHF)"]),
