@@ -88,6 +88,7 @@ function normalizeRecord(record) {
     monthly: numberOrZero(fields["Cost Monthly (CHF)"]),
     yearly: numberOrZero(fields["Cost Yearly (CHF)"]),
     paidVia: String(fields["Paid Via"] || "").trim(),
+    renewalDate: String(fields["Next Renewal or Expiry"] || "").trim(),
     notes: String(fields.Notes || "").trim(),
   };
 }

@@ -517,6 +517,7 @@
     .status { display: inline-flex; align-items: center; gap: 7px; color: var(--status-color); white-space: nowrap; }
     .status::before { width: 8px; height: 8px; border-radius: 50%; background: currentColor; content: ""; }
     .money { color: #dfe5f1; font-weight: 750; white-space: nowrap; }
+    .renewal-date time { white-space: nowrap; }
 
     .edit-link {
       display: inline-grid;
@@ -643,6 +644,13 @@
       .bar-track { height: 26px; }
       .wishlist-form { grid-template-columns: 1fr; }
       .wishlist-form .secondary-action { justify-self: stretch; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field-wide { grid-column: auto; }
+      .subscription-form { padding: 20px; }
+      .dialog-header { padding: 20px 20px 0; }
+    }
+
+    @media (max-width: 1080px) {
       .mobile-sort { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 15px; }
       .mobile-sort select { min-height: 42px; }
       .sort-direction { min-height: 42px; padding: 0 13px; border: 1px solid var(--border); border-radius: 11px; background: #0a1221; color: var(--muted); cursor: pointer; font-weight: 750; }
@@ -664,10 +672,6 @@
       }
       td.edit-cell { display: flex; justify-content: flex-end; padding-top: 10px; }
       td.edit-cell::before { display: none; }
-      .form-grid { grid-template-columns: 1fr; }
-      .field-wide { grid-column: auto; }
-      .subscription-form { padding: 20px; }
-      .dialog-header { padding: 20px 20px 0; }
     }
 
     @media (max-width: 430px) {
@@ -766,6 +770,7 @@
             <option value="yearly">Yearly price</option>
             <option value="monthly">Monthly price</option>
             <option value="paidVia">Paid via</option>
+            <option value="renewalDate">Renewal or expiry date</option>
           </select>
           <button class="sort-direction" id="sortDirection" type="button">Ascending ↑</button>
         </div>
@@ -773,16 +778,17 @@
           <table>
             <thead>
               <tr>
-                <th style="width: 22%" aria-sort="none"><button class="sort-button" type="button" data-sort="name">Subscription <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
-                <th style="width: 17%" aria-sort="none"><button class="sort-button" type="button" data-sort="category">Category <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
-                <th style="width: 14%" aria-sort="none"><button class="sort-button" type="button" data-sort="status">Status <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
-                <th style="width: 11%" aria-sort="none"><button class="sort-button" type="button" data-sort="yearly">Yearly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
-                <th style="width: 11%" aria-sort="none"><button class="sort-button" type="button" data-sort="monthly">Monthly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
-                <th style="width: 19%" aria-sort="none"><button class="sort-button" type="button" data-sort="paidVia">Paid via <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 20%" aria-sort="none"><button class="sort-button" type="button" data-sort="name">Subscription <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 14%" aria-sort="none"><button class="sort-button" type="button" data-sort="category">Category <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 11%" aria-sort="none"><button class="sort-button" type="button" data-sort="status">Status <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 10%" aria-sort="none"><button class="sort-button" type="button" data-sort="yearly">Yearly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 10%" aria-sort="none"><button class="sort-button" type="button" data-sort="monthly">Monthly <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 15%" aria-sort="none"><button class="sort-button" type="button" data-sort="paidVia">Paid via <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                <th style="width: 14%" aria-sort="none"><button class="sort-button" type="button" data-sort="renewalDate">Renewal / expiry <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
                 <th class="edit-header" style="width: 6%"><span class="sr-only">Edit</span></th>
               </tr>
             </thead>
-            <tbody id="subscriptionRows"><tr><td colspan="7"><div class="loading-state">Loading subscriptions…</div></td></tr></tbody>
+            <tbody id="subscriptionRows"><tr><td colspan="8"><div class="loading-state">Loading subscriptions…</div></td></tr></tbody>
           </table>
         </div>
       </section>
@@ -906,6 +912,20 @@
       return `CHF ${rounded.toLocaleString("de-CH")}`;
     }
 
+    const renewalDateFormat = new Intl.DateTimeFormat("en-GB", {
+      day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
+    });
+
+    function renewalDateContent(renewalDate) {
+      if (!renewalDate) return "—";
+      const date = new Date(renewalDate + "T00:00:00Z");
+      if (Number.isNaN(date.getTime())) return "—";
+      const time = document.createElement("time");
+      time.dateTime = renewalDate;
+      time.textContent = renewalDateFormat.format(date);
+      return time;
+    }
+
     function categoryStyle(category) { const colors = categoryColors[category] || categoryColors.Other; return { start: colors[0], end: colors[1], text: colors[2] }; }
 
     function sortSubscriptions(items) {
@@ -921,6 +941,7 @@
         const numeric = sortKey === "yearly" || sortKey === "monthly";
         const left = numeric ? Number(a[sortKey] || 0) : String(a[sortKey] || "");
         const right = numeric ? Number(b[sortKey] || 0) : String(b[sortKey] || "");
+        if (sortKey === "renewalDate" && Boolean(left) !== Boolean(right)) return left ? -1 : 1;
         const comparison = numeric ? left - right : left.localeCompare(right, "en", { sensitivity: "base" });
         return (comparison || a.name.localeCompare(b.name)) * (sortDirection === "asc" ? 1 : -1);
       });
@@ -1005,7 +1026,7 @@
       syncSortControls();
       subscriptionRows.replaceChildren();
       if (!visible.length) {
-        const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7;
+        const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 8;
         const empty = document.createElement("div"); empty.className = "empty-state";
         empty.textContent = activeCategory === "All" ? `No ${activeFilter.toLowerCase()} subscriptions.` : `No ${activeFilter.toLowerCase()} subscriptions in ${activeCategory}.`;
         td.appendChild(empty); tr.appendChild(td); subscriptionRows.appendChild(tr); return;
@@ -1015,7 +1036,16 @@
         const category = document.createElement("span"); category.className = "category-pill"; category.style.setProperty("--category-color", colors.text); category.textContent = item.category;
         const status = document.createElement("span"); status.className = "status"; status.style.setProperty("--status-color", statusColors[item.status] || statusColors.Paused); status.textContent = item.status;
         const edit = document.createElement("button"); edit.className = "edit-link"; edit.type = "button"; edit.title = `Edit ${item.name}`; edit.setAttribute("aria-label", edit.title); edit.textContent = "✎"; edit.addEventListener("click", () => openSubscriptionDialog(item));
-        tr.append(cell("Subscription", "name-cell", item.name), cell("Category", "", category), cell("Status", "", status), cell("Yearly", "money", formatCHF(item.yearly)), cell("Monthly", "", formatCHF(item.monthly)), cell("Paid via", "", item.paidVia || "—"), cell("", "edit-cell", edit));
+        tr.append(
+          cell("Subscription", "name-cell", item.name),
+          cell("Category", "", category),
+          cell("Status", "", status),
+          cell("Yearly", "money", formatCHF(item.yearly)),
+          cell("Monthly", "", formatCHF(item.monthly)),
+          cell("Paid via", "", item.paidVia || "—"),
+          cell("Renewal / expiry", "renewal-date", renewalDateContent(item.renewalDate)),
+          cell("", "edit-cell", edit),
+        );
         subscriptionRows.appendChild(tr);
       });
     }
@@ -1026,7 +1056,7 @@
       syncState.className = "sync-line error"; syncState.textContent = "Airtable connection needs attention";
       yearlySpend.textContent = monthlySpend.textContent = activeCount.textContent = freeCount.textContent = "—";
       categoryChart.replaceChildren(); const chartError = document.createElement("div"); chartError.className = "error-state"; chartError.textContent = message; categoryChart.appendChild(chartError);
-      subscriptionRows.replaceChildren(); const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7; const tableError = document.createElement("div"); tableError.className = "error-state"; tableError.textContent = message; td.appendChild(tableError); tr.appendChild(td); subscriptionRows.appendChild(tr);
+      subscriptionRows.replaceChildren(); const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 8; const tableError = document.createElement("div"); tableError.className = "error-state"; tableError.textContent = message; td.appendChild(tableError); tr.appendChild(td); subscriptionRows.appendChild(tr);
     }
 
     function showToast(message, isError = false) {
